@@ -1,0 +1,25 @@
+{
+  "name": "hommel-design-project",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HellButcher/hommel-design"
+  },
+  "author": {
+    "name": "Christoph Hommelsheim",
+    "url": "https://hommel.dev"
+  },
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "build": "pnpm run -r --if-present build",
+    "test": "pnpm run -r --if-present test",
+    "sync-package-json": "pnpm exec -r --include-workspace-root node \"$PWD/scripts/sync-package-json.ts\""
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  },
+  "packageManager": "pnpm@12.15.0+sha512.b3951d6d6ff4a9f13dc7cf56cd28d2b8eb37dbcc9c68e52e1e1191873ea9f82a017287ab50baadc5ccc494f036c67c0e47eb13608c2fa36f47711b61ea128e61"
+}
