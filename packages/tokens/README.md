@@ -6,19 +6,19 @@ brand color. Colors use sRGB objects; dimensions and durations carry explicit un
 ## Three Tiers
 
 - **Primitive:** raw palette colors and numeric scales for spacing, font size,
-    weight, radius, stroke, duration, easing, opacity, and shadows. Names describe
-    values, never usage: `color.teal.600`, not `color.teal-hover`. Colors are
-    grouped by hue with numeric shades, except standalone `color.white` and
-    `color.black`. Every primitive contains literal values,
-    never references, including inside composite values.
+  weight, radius, stroke, duration, easing, opacity, and shadows. Names describe
+  values, never usage: `color.teal.600`, not `color.teal-hover`. Colors are
+  grouped by hue with numeric shades, except standalone `color.white` and
+  `color.black`. Every primitive contains literal values,
+  never references, including inside composite values.
 - **Semantic:** stable roles such as `color.accent-ink`, `typography.body`,
-    `radius.control`, and `motion.duration.interaction`. All theme, density, and
-    motion decisions live here. Semantic tokens reference primitives or other
-    semantic roles.
+  `radius.control`, and `motion.duration.interaction`. All theme, density, and
+  motion decisions live here. Semantic tokens reference primitives or other
+  semantic roles.
 - **Component:** a small set of primary-button slots, including hover, active,
-    disabled, focus, typography, and sizing. Every slot references a semantic token,
-    never a primitive or literal value. Add component slots only for real needs;
-    other components can consume semantic roles directly.
+  disabled, focus, typography, and sizing. Every slot references a semantic token,
+  never a primitive or literal value. Add component slots only for real needs;
+  other components can consume semantic roles directly.
 
 Example resolution:
 
@@ -62,16 +62,16 @@ Contrast is measured after resolving semantic aliases in each context, not on
 primitive colors in isolation. Example light-mode measurements against the
 resolved `color.background.surface` (white):
 
-| Resolved Semantic Foreground | Ratio |
-| --- | ---: |
-| `color.accent-ink` | 5.47:1 |
-| `color.secondary-ink` | 5.73:1 |
-| `color.status.success` | 7.13:1 |
-| `color.status.warning` | 7.09:1 |
-| `color.status.danger` | 6.47:1 |
-| `color.status.info` | 6.70:1 |
-| `color.text.primary` | 15.34:1 |
-| `color.text.secondary` | 5.30:1 |
+| Resolved Semantic Foreground |   Ratio |
+| ---------------------------- | ------: |
+| `color.accent-ink`           |  5.47:1 |
+| `color.secondary-ink`        |  5.73:1 |
+| `color.status.success`       |  7.13:1 |
+| `color.status.warning`       |  7.09:1 |
+| `color.status.danger`        |  6.47:1 |
+| `color.status.info`          |  6.70:1 |
+| `color.text.primary`         | 15.34:1 |
+| `color.text.secondary`       |  5.30:1 |
 
 Components use semantic inks: light mode selects darker shades; dark mode
 selects brighter shades instead. Tests require body text, accent inks, and

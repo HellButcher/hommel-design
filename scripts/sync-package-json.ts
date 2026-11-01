@@ -1,18 +1,18 @@
-import * as process from "node:process";
-import * as path from "node:path";
 import * as fs from "node:fs";
+import * as path from "node:path";
+import * as process from "node:process";
 
 const TEMPLATE = {
   license: "MIT",
   author: {
     name: "Christoph Hommelsheim",
-    url: "https://hommel.dev"
+    url: "https://hommel.dev",
   },
   repository: {
     type: "git",
     url: "git+https://github.com/HellButcher/hommel-design",
   },
-}
+};
 
 const STANDARD_FIELD_ORDER = [
   "name",
@@ -42,7 +42,7 @@ const STANDARD_FIELD_ORDER = [
   "packageManager",
 ];
 
-function processPackageJson<J extends Record<string,unknown>>(packageJson: J): J {
+function processPackageJson<J extends Record<string, unknown>>(packageJson: J): J {
   const ordered: J = {};
 
   // first all fields by STANDARD_FIELD_ORDER
@@ -56,7 +56,7 @@ function processPackageJson<J extends Record<string,unknown>>(packageJson: J): J
 
   // then all remaining fields
   for (const field in packageJson) {
-    if(!(field in ordered)) {
+    if (!(field in ordered)) {
       ordered[field] = packageJson[field];
     }
   }
@@ -66,18 +66,17 @@ function processPackageJson<J extends Record<string,unknown>>(packageJson: J): J
 
 // process package.json
 const PACKAGE_JSON_PATH = "./package.json";
-const packageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_PATH, 'utf8'));
+const packageJson = JSON.parse(fs.readFileSync(PACKAGE_JSON_PATH, "utf8"));
 
 console.log(`Processing ${packageJson.name || path.dirname(process.cwd())}...`);
 
 const processedJson = processPackageJson(packageJson);
 
-fs.writeFileSync(PACKAGE_JSON_PATH, JSON.stringify(processedJson, null, 2) + '\n');
-
+fs.writeFileSync(PACKAGE_JSON_PATH, JSON.stringify(processedJson, null, 2) + "\n");
 
 // copy LICENSE.md
 const SOURCE_LICENSE_PATH = path.resolve(path.dirname(import.meta.dirname), "./LICENSE.md");
-const DEST_LICENSE_PATH = path.resolve('LICENSE.md');
+const DEST_LICENSE_PATH = path.resolve("LICENSE.md");
 
 if (SOURCE_LICENSE_PATH !== DEST_LICENSE_PATH) {
   fs.copyFileSync(SOURCE_LICENSE_PATH, DEST_LICENSE_PATH);

@@ -1,12 +1,16 @@
 {
   "name": "@hommel/design-tokens",
   "version": "0.1.0",
+  "style": "dist/index.css",
+  "files": [
+    "dist/",
+    "src/"
+  ],
   "type": "module",
-	"main": "dist/index.css",
-	"style": "dist/index.css",
-	"sideEffects": [
+  "sideEffects": [
     "dist/index.css"
   ],
+  "main": "dist/index.css",
   "exports": {
     ".": {
       "import": "./dist/index.css",
@@ -20,20 +24,15 @@
     },
     "./src/": "./src/"
   },
-  "files": [
-		"dist/",
-    "src/"
-	],
   "scripts": {
     "build": "tz build",
     "check": "tz check",
     "clear": "rm -rf dist"
   },
   "devDependencies": {
+    "@hommel/terrazzo-plugin-custom-css": "workspace:",
     "@terrazzo/cli": "^2.10.0",
     "@terrazzo/plugin-css": "^2.10.0",
-    "@terrazzo/plugin-scss": "^2.10.0",
-    "@terrazzo/token-tools": "^2.10.0",
-    "@hommel/terrazzo-plugin-custom-css": "workspace:"
+    "@terrazzo/token-tools": "^2.10.0"
   }
 }
