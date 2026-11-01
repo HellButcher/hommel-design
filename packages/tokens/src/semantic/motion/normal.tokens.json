@@ -1,0 +1,15 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "motion": {
+    "duration": {
+      "$type": "duration",
+      "interaction": { "$value": "{duration.100}" },
+      "entrance": { "$value": "{duration.200}" }
+    },
+    "easing": {
+      "$type": "cubicBezier",
+      "interaction": { "$value": "{easing.100}" },
+      "entrance": { "$value": "{easing.200}" }
+    }
+  }
+}

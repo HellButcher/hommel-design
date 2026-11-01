@@ -16,6 +16,7 @@
   "scripts": {
     "build": "pnpm run -r --if-present build",
     "test": "pnpm run -r --if-present test",
+    "clean": "pnpm run -r --if-present clean",
     "sync-package-json": "pnpm exec -r --include-workspace-root node \"$PWD/scripts/sync-package-json.ts\""
   },
   "engines": {

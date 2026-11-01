@@ -1,0 +1,18 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "spacing": {
+    "$type": "dimension",
+    "0": { "$value": { "value": 0, "unit": "rem" } },
+    "050": { "$value": { "value": 0.125, "unit": "rem" } },
+    "100": { "$value": { "value": 0.25, "unit": "rem" } },
+    "200": { "$value": { "value": 0.5, "unit": "rem" } },
+    "300": { "$value": { "value": 0.75, "unit": "rem" } },
+    "400": { "$value": { "value": 1, "unit": "rem" } },
+    "600": { "$value": { "value": 1.5, "unit": "rem" } },
+    "800": { "$value": { "value": 2, "unit": "rem" } },
+    "900": { "$value": { "value": 2.25, "unit": "rem" } },
+    "1100": { "$value": { "value": 2.75, "unit": "rem" } },
+    "1200": { "$value": { "value": 3, "unit": "rem" } },
+    "1600": { "$value": { "value": 4, "unit": "rem" } }
+  }
+}

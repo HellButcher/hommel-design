@@ -1,0 +1,83 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "font": {
+    "family": {
+      "$type": "fontFamily",
+      "source-sans": { "$value": ["Source Sans 3", "sans-serif"] },
+      "source-code": { "$value": ["Source Code Pro", "monospace"] }
+    },
+    "weight": {
+      "$type": "fontWeight",
+      "400": { "$value": 400 },
+      "600": { "$value": 600 },
+      "700": { "$value": 700 }
+    },
+    "size": {
+      "$type": "dimension",
+      "100": { "$value": { "value": 0.875, "unit": "rem" } },
+      "200": { "$value": { "value": 1, "unit": "rem" } },
+      "300": { "$value": { "value": 1.25, "unit": "rem" } },
+      "400": { "$value": { "value": 1.5, "unit": "rem" } },
+      "500": { "$value": { "value": 2, "unit": "rem" } }
+    },
+    "line-height": {
+      "$type": "number",
+      "125": { "$value": 1.25 },
+      "150": { "$value": 1.5 }
+    },
+    "letter-spacing": {
+      "$type": "dimension",
+      "0": { "$value": { "value": 0, "unit": "rem" } }
+    }
+  },
+  "radius": {
+    "$type": "dimension",
+    "0": { "$value": { "value": 0, "unit": "px" } },
+    "100": { "$value": { "value": 4, "unit": "px" } },
+    "200": { "$value": { "value": 8, "unit": "px" } },
+    "infty": { "$value": { "value": 9999, "unit": "px" } }
+  },
+  "stroke": {
+    "$type": "dimension",
+    "100": { "$value": { "value": 1, "unit": "px" } },
+    "200": { "$value": { "value": 2, "unit": "px" } }
+  },
+  "duration": {
+    "$type": "duration",
+    "0": { "$value": { "value": 0, "unit": "ms" } },
+    "100": { "$value": { "value": 120, "unit": "ms" } },
+    "200": { "$value": { "value": 200, "unit": "ms" } },
+    "300": { "$value": { "value": 320, "unit": "ms" } }
+  },
+  "easing": {
+    "$type": "cubicBezier",
+    "100": { "$value": [0.2, 0, 0, 1] },
+    "200": { "$value": [0, 0, 0, 1] }
+  },
+  "alpha": {
+    "$type": "number",
+    "400": { "$value": 0.4 },
+    "600": { "$value": 0.6 }
+  },
+  "shadow": {
+    "$type": "shadow",
+    "100": {
+      "$value": {
+        "color": { "colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0.12 },
+        "offsetX": { "value": 0, "unit": "px" },
+        "offsetY": { "value": 1, "unit": "px" },
+        "blur": { "value": 3, "unit": "px" },
+        "spread": { "value": 0, "unit": "px" }
+      }
+    },
+    "200": {
+      "$value": {
+        "color": { "colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0.2 },
+        "offsetX": { "value": 0, "unit": "px" },
+        "offsetY": { "value": 8, "unit": "px" },
+        "blur": { "value": 24, "unit": "px" },
+        "spread": { "value": 0, "unit": "px" }
+      }
+    }
+  }
+}

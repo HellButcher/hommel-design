@@ -1,0 +1,30 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "button": {
+    "primary": {
+      "background": {
+        "$root": { "$value": "{color.action.primary}" },
+        "hover": { "$value": "{color.action.primary.hover}" },
+        "active": { "$value": "{color.action.primary.active}" },
+        "disabled": { "$value": "{color.disabled.background}" }
+      },
+      "text": {
+        "$root": { "$value": "{color.action.primary.text}" },
+        "disabled": { "$value": "{color.disabled.text}" }
+      },
+      "border-radius": { "$value": "{radius.control}" },
+      "border-width": { "$value": "{border.width.control}" },
+      "border-color": { "$value": "{color.border.control}" },
+      "padding-x": { "$value": "{space.control.padding-x}" },
+      "padding-y": { "$value": "{space.control.padding-y}" },
+      "gap": { "$value": "{space.control.gap}" },
+      "min-height": { "$value": "{space.control.min-height}" },
+      "typography": { "$value": "{typography.label}" },
+      "focus-color": { "$value": "{color.focus}" },
+      "focus-width": { "$value": "{border.width.focus}" },
+      "focus-offset": { "$value": "{border.focus-offset}" },
+      "duration": { "$value": "{motion.duration.interaction}" },
+      "easing": { "$value": "{motion.easing.interaction}" }
+    }
+  }
+}

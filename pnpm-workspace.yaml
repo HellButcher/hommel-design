@@ -1,3 +1,7 @@
+blockExoticSubdeps: true
+preferFrozenLockfile: true
+ignoreScripts: true
+minimumReleaseAge: 4320
+trustPolicy: no-downgrade
 packages:
   - packages/*
-

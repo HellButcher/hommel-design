@@ -1,0 +1,13 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "space": {
+    "$type": "dimension",
+    "control": {
+      "padding-x": { "$value": "{spacing.400}" },
+      "padding-y": { "$value": "{spacing.300}" },
+      "gap": { "$value": "{spacing.200}" },
+      "min-height": { "$value": "{spacing.1100}" }
+    },
+    "panel": { "$value": "{spacing.600}" }
+  }
+}

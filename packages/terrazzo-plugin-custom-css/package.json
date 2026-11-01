@@ -1,0 +1,10 @@
+{
+  "name": "@hommel/terrazzo-plugin-custom-css",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "src/index.ts",
+  "devDependencies": {
+    "@terrazzo/parser": "^2.10.0",
+    "@terrazzo/token-tools": "^2.10.0"
+  }
+}

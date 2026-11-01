@@ -1,0 +1,90 @@
+{
+  "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
+  "radius": {
+    "$type": "dimension",
+    "control": { "$value": "{radius.100}" },
+    "panel": { "$value": "{radius.200}" },
+    "pill": { "$value": "{radius.infty}" }
+  },
+  "space": {
+    "$type": "dimension",
+    "inline": { "$value": "{spacing.200}" },
+    "stack": { "$value": "{spacing.400}" },
+    "section": { "$value": "{spacing.1200}" }
+  },
+  "border": {
+    "width": {
+      "$type": "dimension",
+      "control": { "$value": "{stroke.100}" },
+      "focus": { "$value": "{stroke.200}" }
+    },
+    "focus-offset": { "$type": "dimension", "$value": "{spacing.050}" }
+  },
+  "typography": {
+    "$type": "typography",
+    "body": {
+      "$value": {
+        "fontFamily": "{font.family.source-sans}",
+        "fontSize": "{font.size.200}",
+        "fontWeight": "{font.weight.400}",
+        "letterSpacing": "{font.letter-spacing.0}",
+        "lineHeight": "{font.line-height.150}"
+      }
+    },
+    "caption": {
+      "$value": {
+        "fontFamily": "{font.family.source-sans}",
+        "fontSize": "{font.size.100}",
+        "fontWeight": "{font.weight.400}",
+        "letterSpacing": "{font.letter-spacing.0}",
+        "lineHeight": "{font.line-height.150}"
+      }
+    },
+    "label": {
+      "$value": {
+        "fontFamily": "{font.family.source-sans}",
+        "fontSize": "{font.size.200}",
+        "fontWeight": "{font.weight.600}",
+        "letterSpacing": "{font.letter-spacing.0}",
+        "lineHeight": "{font.line-height.125}"
+      }
+    },
+    "heading": {
+      "$value": {
+        "fontFamily": "{font.family.source-sans}",
+        "fontSize": "{font.size.400}",
+        "fontWeight": "{font.weight.700}",
+        "letterSpacing": "{font.letter-spacing.0}",
+        "lineHeight": "{font.line-height.125}"
+      }
+    },
+    "display": {
+      "$value": {
+        "fontFamily": "{font.family.source-sans}",
+        "fontSize": "{font.size.500}",
+        "fontWeight": "{font.weight.700}",
+        "letterSpacing": "{font.letter-spacing.0}",
+        "lineHeight": "{font.line-height.125}"
+      }
+    },
+    "code": {
+      "$value": {
+        "fontFamily": "{font.family.source-code}",
+        "fontSize": "{font.size.100}",
+        "fontWeight": "{font.weight.400}",
+        "letterSpacing": "{font.letter-spacing.0}",
+        "lineHeight": "{font.line-height.150}"
+      }
+    }
+  },
+  "elevation": {
+    "$type": "shadow",
+    "raised": { "$value": "{shadow.100}" },
+    "floating": { "$value": "{shadow.200}" }
+  },
+  "opacity": {
+    "$type": "number",
+    "disabled": { "$value": "{alpha.600}" },
+    "backdrop": { "$value": "{alpha.400}" }
+  }
+}

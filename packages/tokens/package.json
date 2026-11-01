@@ -1,14 +1,39 @@
 {
-  "name": "hommel-design-tokens",
+  "name": "@hommel/design-tokens",
   "version": "0.1.0",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/HellButcher/hommel-design"
+  "type": "module",
+	"main": "dist/index.css",
+	"style": "dist/index.css",
+	"sideEffects": [
+    "dist/index.css"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.css",
+      "default": "./dist/index.css",
+      "style": "./dist/index.css"
+    },
+    "./index.css": {
+      "import": "./dist/index.css",
+      "default": "./dist/index.css",
+      "style": "./dist/index.css"
+    },
+    "./src/": "./src/"
   },
-  "author": {
-    "name": "Christoph Hommelsheim",
-    "url": "https://hommel.dev"
+  "files": [
+		"dist/",
+    "src/"
+	],
+  "scripts": {
+    "build": "tz build",
+    "check": "tz check",
+    "clear": "rm -rf dist"
   },
-  "type": "module"
+  "devDependencies": {
+    "@terrazzo/cli": "^2.10.0",
+    "@terrazzo/plugin-css": "^2.10.0",
+    "@terrazzo/plugin-scss": "^2.10.0",
+    "@terrazzo/token-tools": "^2.10.0",
+    "@hommel/terrazzo-plugin-custom-css": "workspace:"
+  }
 }
