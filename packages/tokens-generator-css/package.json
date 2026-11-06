@@ -1,0 +1,23 @@
+{
+  "name": "@hommel/tokens-generator-css",
+  "version": "0.1.0",
+  "description": "CSS custom properties format plugin for @hommel/tokens-generator",
+  "license": "MIT",
+  "author": {
+    "name": "Christoph Hommelsheim",
+    "url": "https://hommel.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HellButcher/hommel-design"
+  },
+  "type": "module",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@hommel/tokens-generator": "workspace:",
+    "colorjs.io": "^0.7.1"
+  }
+}

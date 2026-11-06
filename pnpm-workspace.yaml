@@ -5,3 +5,5 @@ minimumReleaseAge: 4320
 trustPolicy: no-downgrade
 packages:
   - packages/*
+trustPolicyExclude:
+  - undici-types@6.21.0

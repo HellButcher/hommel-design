@@ -42,13 +42,13 @@ const STANDARD_FIELD_ORDER = [
   "packageManager",
 ];
 
-function processPackageJson<J extends Record<string, unknown>>(packageJson: J): J {
-  const ordered: J = {};
+function processPackageJson(packageJson: Record<string, unknown>): Record<string, unknown> {
+  const ordered: Record<string, unknown> = {};
 
   // first all fields by STANDARD_FIELD_ORDER
   for (const field of STANDARD_FIELD_ORDER) {
     if (field in TEMPLATE) {
-      ordered[field] = TEMPLATE[field];
+      ordered[field] = TEMPLATE[field as keyof typeof TEMPLATE];
     } else {
       ordered[field] = packageJson[field];
     }

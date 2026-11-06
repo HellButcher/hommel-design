@@ -16,8 +16,9 @@
   "scripts": {
     "build": "pnpm run -r --if-present build",
     "test": "pnpm run -r --if-present test",
-    "check": "pnpm run fmt:check && pnpm run lint && pnpm run -r --if-present check",
+    "check": "pnpm run fmt:check && pnpm run lint && pnpm run typecheck && pnpm run -r --if-present check",
     "clean": "pnpm run -r --if-present clean",
+    "typecheck": "tsc -p tsconfig.node.json",
     "fmt": "oxfmt",
     "fmt:check": "oxfmt --check",
     "lint": "oxlint",
@@ -25,8 +26,10 @@
     "sync-package-json": "pnpm exec -r --include-workspace-root node \"$PWD/scripts/sync-package-json.ts\""
   },
   "devDependencies": {
+    "@types/node": "~22.18.13",
     "oxfmt": "^0.75.0",
-    "oxlint": "^1.90.0"
+    "oxlint": "^1.90.0",
+    "typescript": "^7.0.2"
   },
   "engines": {
     "node": ">=22.18.0"

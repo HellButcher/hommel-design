@@ -1,0 +1,22 @@
+{
+  "name": "@hommel/tokens-generator",
+  "version": "0.1.0",
+  "description": "Minimal generator for Design Tokens (DTCG 2025.10 incl. resolver) with format plugins",
+  "license": "MIT",
+  "author": {
+    "name": "Christoph Hommelsheim",
+    "url": "https://hommel.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HellButcher/hommel-design"
+  },
+  "bin": {
+    "hommel-tokens": "src/cli.ts"
+  },
+  "type": "module",
+  "main": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  }
+}
