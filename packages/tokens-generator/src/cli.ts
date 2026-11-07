@@ -6,7 +6,7 @@ import { parseArgs } from "node:util";
 import { build } from "./build.ts";
 import type { Config } from "./types.ts";
 
-const USAGE = `Usage: hommel-tokens [options]
+const USAGE = `Usage: hommel-tokens-generator [options]
 
 Options:
   -c, --config <file>  config file (default: tokens.config.ts)

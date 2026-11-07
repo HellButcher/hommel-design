@@ -34,7 +34,7 @@
     "./src/": "./src/"
   },
   "scripts": {
-    "build": "hommel-tokens",
+    "build": "hommel-tokens-generator",
     "check": "tz check",
     "clear": "rm -rf dist"
   },

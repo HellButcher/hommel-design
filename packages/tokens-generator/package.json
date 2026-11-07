@@ -12,7 +12,7 @@
     "url": "git+https://github.com/HellButcher/hommel-design"
   },
   "bin": {
-    "hommel-tokens": "src/cli.ts"
+    "hommel-tokens-generator": "src/cli.ts"
   },
   "type": "module",
   "main": "src/index.ts",
