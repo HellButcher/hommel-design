@@ -265,7 +265,7 @@ export function isFontFamily(value: unknown): value is FontFamilyValue {
 
 export function isFontWeight(value: unknown): value is FontWeightValue {
   return (
-    isFiniteNumber(value) ||
+    (isFiniteNumber(value) && value >= 1 && value <= 1000) ||
     (typeof value === "string" && FONT_WEIGHTS.has(value as FontWeightKeyword))
   );
 }

@@ -3,7 +3,7 @@ import type { TypedValue, UntypedValue } from "./token-values.ts";
 import type { ContrastAlgorithm } from "./validate.ts";
 
 export interface TokenBase {
-  /** dot separated path, e.g. `color.action.primary` (`$root` tokens use the group path) */
+  /** dot separated path, e.g. `color.action.primary` (`$root` tokens get a `.$root` suffix) */
   id: string;
   /** set when the whole `$value` is an alias */
   aliasOf?: string | undefined;

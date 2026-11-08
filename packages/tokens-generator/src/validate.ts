@@ -17,7 +17,8 @@ function checkNames(document: TokenDocument) {
     ),
   );
   for (const token of tokens.values()) {
-    if (!/^(?:[a-z0-9]+(?:[-.][a-z0-9]+)*)$/.test(token.id)) {
+    const id = token.id.replace(/\.\$root$/, "");
+    if (!/^(?:[a-z0-9]+(?:[-.][a-z0-9]+)*)$/.test(id)) {
       document.warning("Token name is not kebab-case", token);
     }
   }

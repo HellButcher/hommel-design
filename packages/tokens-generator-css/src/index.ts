@@ -20,10 +20,23 @@ export interface CssPluginOptions {
   mediaQueries?: Record<string, Record<string, string>>;
 }
 
+export function defaultVarNameFunction(
+  prefix?: string,
+  segment: (id: string) => string = kebabCase,
+): VarName {
+  const actualPrefix = prefix ? `--${prefix}-` : "--";
+  return (id) =>
+    actualPrefix +
+    id
+      .split(".")
+      .filter((part) => part !== "$root")
+      .map(segment)
+      .join("-");
+}
+
 export default function css(options: CssPluginOptions = {}): Plugin {
   const filename = options.filename ?? "index.css";
-  const prefix = options.prefix ? `--${options.prefix}-` : "--";
-  const varName: VarName = (id) => prefix + id.split(".").map(kebabCase).join("-");
+  const varName = defaultVarNameFunction(options.prefix);
 
   /** declarations for a token: typography gets one declaration per property plus the `font` shorthand */
   function declarations(token: Token): [name: string, value: string][] {

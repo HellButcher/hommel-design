@@ -3,7 +3,7 @@
   "button": {
     "primary": {
       "background": {
-        "$root": { "$value": "{color.action.primary}" },
+        "$root": { "$value": "{color.action.primary.$root}" },
         "hover": { "$value": "{color.action.primary.hover}" },
         "active": { "$value": "{color.action.primary.active}" },
         "disabled": { "$value": "{color.disabled.background}" }

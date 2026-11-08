@@ -129,6 +129,12 @@ class Walk {
       extensions = node.$extensions;
     }
     if ("$value" in node) {
+      const extraKeys = Object.keys(node).filter((key) => !key.startsWith("$"));
+      if (extraKeys.length > 0) {
+        this.warning(
+          `Token must not have child token/group keys alongside $value (found ${extraKeys.join(", ")})`,
+        );
+      }
       const id = this.path.join(".");
       let value;
       if (isTokenValue(type, node.$value)) {
@@ -138,7 +144,8 @@ class Walk {
         return;
       }
       if (type === undefined && !isAliasValue(value)) {
-        this.warning("Token has no usable $type; emitting its string or number value as untyped");
+        this.error("Token has no usable $type; emitting its string or number value as untyped");
+        return;
       }
       token_callback({
         id,
@@ -153,13 +160,7 @@ class Walk {
       return;
     }
     for (const [key, child] of Object.entries(node)) {
-      if (key === "$root") {
-        if (!isObject(child)) {
-          this.error("$root must be an object");
-        } else {
-          this.walk(token_callback, child, type);
-        }
-      } else if (key.startsWith("$")) {
+      if (key !== "$root" && key.startsWith("$")) {
         if (!META_KEYS.has(key)) {
           this.warning(`Unknown token property ${key}`);
         }
@@ -173,12 +174,11 @@ class Walk {
     }
   }
 
-  getGroup(path: string[]): JsonObject | undefined {
+  getNode(path: string[]): unknown {
     let node: unknown = this.root;
     for (const key of path) {
       node = isObject(node) ? node[key] : undefined;
     }
-    if (!isObject(node)) return undefined;
     return node;
   }
 
@@ -194,12 +194,16 @@ class Walk {
       return rest;
     }
     seen.add(targetId);
-    const targetPath = targetId.split(".");
-    let target = this.getGroup(targetPath);
-    if (!target) {
+    const node = this.getNode(targetId.split("."));
+    if (!isObject(node)) {
       this.error(`Unknown group "${targetId}"`);
       return rest;
     }
+    if ("$value" in node) {
+      this.error(`$extends must not reference a token ("${targetId}")`);
+      return rest;
+    }
+    let target = node;
     if (target.$extends !== undefined) {
       target = this.applyExtends(target, seen);
     }
