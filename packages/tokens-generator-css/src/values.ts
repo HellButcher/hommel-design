@@ -3,7 +3,6 @@ import {
   type ColorSpace,
   type ColorValue,
   type FontWeightKeyword,
-  type TokenType,
   type TypedValue,
   type TypographyValue,
   type UntypedValue,
@@ -168,17 +167,13 @@ export function toCss(v: TypedValue | UntypedValue, varName: VarName): string {
   }
 }
 
-export const TYPOGRAPHY_KEYS_SUB_TYPES: Record<keyof TypographyValue, TokenType> = {
-  fontFamily: "fontFamily",
-  fontSize: "dimension",
-  fontWeight: "fontWeight",
-  letterSpacing: "dimension",
-  lineHeight: "number",
-};
-
-export const TYPOGRAPHY_KEYS: (keyof TypographyValue)[] = Object.keys(
-  TYPOGRAPHY_KEYS_SUB_TYPES,
-) as (keyof TypographyValue)[];
+export const TYPOGRAPHY_KEYS: (keyof TypographyValue)[] = [
+  "fontFamily",
+  "fontSize",
+  "fontWeight",
+  "letterSpacing",
+  "lineHeight",
+];
 
 /** CSS values of the typography properties */
 export function typographyProperties(

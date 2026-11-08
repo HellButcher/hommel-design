@@ -104,11 +104,12 @@ From the workspace root:
 
 ```sh
 pnpm --filter @hommel/design-tokens check
-pnpm --filter @hommel/design-tokens test
 ```
 
-Tests build the CSS with lint enabled, enforce tier boundaries and primitive
-naming, require reference-free primitives and grouped color shades, check
-modifier parity, resolve all eight context combinations, verify semantic
-contrast, and check exported mode declarations. Change roles in semantics;
-change raw values in primitives. Keep names stable across modes.
+The check reports all token parsing and loading diagnostics, then runs the
+configured naming and contrast checks. Unusable tokens are skipped. A build
+still writes CSS from the remaining tokens and exits with an error status when
+it encountered errors. Spec deviations that remain usable and failed policy
+checks are warnings. Configure optional checks in `tokens.config.ts`. Change
+roles in semantics; change raw values in primitives. Keep names stable across
+modes.

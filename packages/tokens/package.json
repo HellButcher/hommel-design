@@ -34,13 +34,12 @@
     "./src/": "./src/"
   },
   "scripts": {
-    "build": "hommel-tokens-generator",
-    "check": "tz check",
+    "build": "hommel-tokens-generator build",
+    "check": "hommel-tokens-generator check",
     "clear": "rm -rf dist"
   },
   "devDependencies": {
     "@hommel/tokens-generator": "workspace:",
-    "@hommel/tokens-generator-css": "workspace:",
-    "@terrazzo/cli": "^2.10.0"
+    "@hommel/tokens-generator-css": "workspace:"
   }
 }

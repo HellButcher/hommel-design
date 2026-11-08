@@ -1,7 +1,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-import { loadDocument } from "./load.ts";
+import type { TokenDocument } from "./load.ts";
 import type { Config } from "./types.ts";
 
 export function defineConfig(config: Config): Config {
@@ -9,9 +9,11 @@ export function defineConfig(config: Config): Config {
 }
 
 /** loads the resolver document, runs all plugins and writes their output files; returns the written paths */
-export async function build(config: Config, baseDir: string = process.cwd()): Promise<string[]> {
-  const documentPath = path.resolve(baseDir, config.resolver);
-  const document = await loadDocument(documentPath);
+export async function build(
+  config: Config,
+  document: TokenDocument,
+  baseDir: string = process.cwd(),
+): Promise<string[]> {
   const outDir = path.resolve(baseDir, config.outDir ?? "dist");
   const written: string[] = [];
   for (const plugin of config.plugins) {

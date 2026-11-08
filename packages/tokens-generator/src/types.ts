@@ -1,11 +1,12 @@
+import type { TokenDocument } from "./load.ts";
 import type { TypedValue, UntypedValue } from "./token-values.ts";
 
 export interface TokenBase {
   /** dot separated path, e.g. `color.action.primary` (`$root` tokens use the group path) */
   id: string;
-  path: string[];
   /** set when the whole `$value` is an alias */
   aliasOf?: string | undefined;
+  source?: string | undefined;
   description?: string | undefined;
   extensions?: Record<string, unknown> | undefined;
   deprecated?: boolean | string | undefined;
@@ -35,17 +36,26 @@ export type ResolutionItem = ResolverSet | ResolverModifier;
 
 export type ModifierInput = Record<string, string>;
 
-export interface TokenDocument {
-  name?: string | undefined;
-  version?: string | undefined;
-  description?: string | undefined;
-  resolutionOrder: ResolutionItem[];
-  /** modifier name -> default context (first context when the modifier has no default) */
-  defaultInput: ModifierInput;
-  /** tokens resolved using the default modifier input */
-  defaultTokens: TokenMap;
-  /** merge all sets and the selected modifier contexts (missing inputs use the defaults) */
-  resolve(input?: ModifierInput): TokenMap;
+export type Severity = "error" | "warning";
+
+export interface TokenDiagnostic {
+  severity: Severity;
+  message: string;
+  token?: string | undefined;
+  where?: string | undefined;
+}
+
+export interface ContrastPair {
+  foreground: string;
+  background: string;
+}
+
+export interface ValidationConfig {
+  kebabCase?: boolean;
+  contrast?: {
+    minimum?: number;
+    pairs: ContrastPair[];
+  };
 }
 
 export interface BuildContext {
@@ -64,5 +74,7 @@ export interface Config {
   resolver: string;
   /** output directory (relative to the config file), defaults to `dist` */
   outDir?: string;
+  /** additional checks run by the `check` and `build` commands */
+  validation?: ValidationConfig;
   plugins: Plugin[];
 }

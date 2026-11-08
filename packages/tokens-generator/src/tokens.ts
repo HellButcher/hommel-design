@@ -1,45 +1,24 @@
-import type { Alias, TokenType } from "./token-values.ts";
-import type { Token, TokenMap } from "./types.ts";
+import {
+  isAliasValue,
+  isObject,
+  isTokenType,
+  isTokenValue,
+  parseAlias,
+  type TokenType,
+} from "./token-values.ts";
+import type { Severity, Token, TokenDiagnostic, TokenMap } from "./types.ts";
 
 export type JsonObject = Record<string, unknown>;
 
-const ALIAS_RE = /^\{([^{}]+)\}$/;
-
-const TOKEN_TYPES: Record<TokenType, true> = {
-  color: true,
-  dimension: true,
-  fontFamily: true,
-  fontWeight: true,
-  duration: true,
-  cubicBezier: true,
-  number: true,
-  strokeStyle: true,
-  border: true,
-  transition: true,
-  shadow: true,
-  gradient: true,
-  typography: true,
-  string: true,
-  boolean: true,
-  link: true,
-};
-
-export function isTokenType(type: unknown): type is TokenType {
-  return typeof type === "string" && Object.hasOwn(TOKEN_TYPES, type);
-}
-
-export function isObject(value: unknown): value is JsonObject {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-export function isAlias(value: unknown): value is Alias {
-  return typeof value === "string" && ALIAS_RE.test(value);
-}
-
-/** returns the referenced token id when `value` is an alias like `{color.teal.500}` */
-export function parseAlias(value: unknown): string | undefined {
-  return typeof value === "string" ? ALIAS_RE.exec(value)?.[1] : undefined;
-}
+const META_KEYS = new Set([
+  "$schema",
+  "$type",
+  "$value",
+  "$description",
+  "$deprecated",
+  "$extends",
+  "$extensions",
+]);
 
 /** follows the alias chain of `id` and returns the final (non-alias) token */
 export function resolveToken(id: string, tokens: TokenMap | TokenMap[]): Token {
@@ -71,69 +50,178 @@ export function mergeTrees(base: JsonObject, override: JsonObject): JsonObject {
   return result;
 }
 
-function getGroup(root: JsonObject, path: string[]): JsonObject {
-  let node: unknown = root;
-  for (const key of path) {
-    node = isObject(node) ? node[key] : undefined;
+class Walk {
+  diagnostics: TokenDiagnostic[];
+  where?: string | undefined;
+  path: string[];
+  root: JsonObject;
+  constructor({
+    root,
+    where,
+    diagnostics = [],
+  }: {
+    root: JsonObject;
+    where?: string | undefined;
+    diagnostics?: TokenDiagnostic[] | undefined;
+  }) {
+    this.root = root;
+    this.diagnostics = diagnostics;
+    this.where = where;
+    this.path = [];
   }
-  if (!isObject(node)) throw new Error(`Unknown group "${path.join(".")}"`);
-  return node;
-}
 
-function applyExtends(root: JsonObject, group: JsonObject, seen: Set<string>): JsonObject {
-  const { $extends, ...rest } = group;
-  const targetId = parseAlias($extends);
-  if (!targetId) throw new Error(`Invalid $extends value ${JSON.stringify($extends)}`);
-  if (seen.has(targetId)) throw new Error(`Circular $extends at "${targetId}"`);
-  seen.add(targetId);
-  let target = getGroup(root, targetId.split("."));
-  if (target.$extends !== undefined) target = applyExtends(root, target, seen);
-  return mergeTrees(target, rest);
-}
+  diagnostic(severity: Severity, message: string) {
+    this.diagnostics.push({
+      severity,
+      message,
+      where: this.where,
+      token: this.path.join(".") || "<root>",
+    });
+  }
+  error(message: string) {
+    this.diagnostic("error", message);
+  }
+  warning(message: string) {
+    this.diagnostic("warning", message);
+  }
 
-function walk(
-  root: JsonObject,
-  node: JsonObject,
-  path: string[],
-  inheritedType: TokenType | undefined,
-  tokens: TokenMap,
-) {
-  if (node.$extends !== undefined) node = applyExtends(root, node, new Set());
-  let type = inheritedType;
-  if (node.$type !== undefined) {
-    if (!isTokenType(node.$type)) {
-      throw new Error(`Unknown $type ${JSON.stringify(node.$type)} at "${path.join(".")}"`);
+  walk(
+    token_callback: (token: Token) => void,
+    node: JsonObject = this.root,
+    inheritedType: TokenType | undefined = undefined,
+  ) {
+    if (node.$extends !== undefined) {
+      node = this.applyExtends(node);
     }
-    type = node.$type;
-  }
-  if ("$value" in node) {
-    const id = path.join(".");
-    // values are not validated (that is up to the linter)
-    tokens.set(id, {
-      id,
-      path,
-      type,
-      value: node.$value,
-      aliasOf: parseAlias(node.$value),
-      description: node.$description as string | undefined,
-      extensions: node.$extensions as Record<string, unknown> | undefined,
-      deprecated: node.$deprecated as boolean | string | undefined,
-    } as Token);
-    return;
-  }
-  for (const [key, child] of Object.entries(node)) {
-    if (!isObject(child)) continue;
-    if (key === "$root") {
-      walk(root, child, path, type, tokens);
-    } else if (!key.startsWith("$")) {
-      walk(root, child, [...path, key], type, tokens);
+    let type = inheritedType;
+    if (node.$type !== undefined) {
+      if (!isTokenType(node.$type)) {
+        this.warning(
+          `Unknown $type ${JSON.stringify(node.$type)}; attempting to emit as an untyped value`,
+        );
+        type = undefined;
+      } else {
+        type = node.$type;
+      }
     }
+    let description;
+    if (node.$description !== undefined && typeof node.$description !== "string") {
+      this.warning("$description must be a string");
+      description = undefined;
+    } else {
+      description = node.$description;
+    }
+    let deprecated;
+    if (
+      node.$deprecated !== undefined &&
+      typeof node.$deprecated !== "boolean" &&
+      typeof node.$deprecated !== "string"
+    ) {
+      this.warning("$deprecated must be a boolean or string");
+      deprecated = true;
+    } else {
+      deprecated = node.$deprecated;
+    }
+    let extensions;
+    if (node.$extensions !== undefined && !isObject(node.$extensions)) {
+      this.warning("$extensions must be an object");
+      extensions = undefined;
+    } else {
+      extensions = node.$extensions;
+    }
+    if ("$value" in node) {
+      const id = this.path.join(".");
+      let value;
+      if (isTokenValue(type, node.$value)) {
+        value = node.$value;
+      } else {
+        this.error(`Cannot emit value as ${type ?? "an untyped token"}`);
+        return;
+      }
+      if (type === undefined && !isAliasValue(value)) {
+        this.warning("Token has no usable $type; emitting its string or number value as untyped");
+      }
+      token_callback({
+        id,
+        type,
+        value,
+        aliasOf: parseAlias(node.$value),
+        source: this.where,
+        description,
+        extensions,
+        deprecated,
+      } as Token);
+      return;
+    }
+    for (const [key, child] of Object.entries(node)) {
+      if (key === "$root") {
+        if (!isObject(child)) {
+          this.error("$root must be an object");
+        } else {
+          this.walk(token_callback, child, type);
+        }
+      } else if (key.startsWith("$")) {
+        if (!META_KEYS.has(key)) {
+          this.warning(`Unknown token property ${key}`);
+        }
+      } else if (!isObject(child)) {
+        this.error("Token groups and definitions must be objects");
+      } else {
+        this.path.push(key);
+        this.walk(token_callback, child, type);
+        this.path.pop();
+      }
+    }
+  }
+
+  getGroup(path: string[]): JsonObject | undefined {
+    let node: unknown = this.root;
+    for (const key of path) {
+      node = isObject(node) ? node[key] : undefined;
+    }
+    if (!isObject(node)) return undefined;
+    return node;
+  }
+
+  applyExtends(group: JsonObject, seen: Set<string> = new Set()): JsonObject {
+    const { $extends, ...rest } = group;
+    const targetId = parseAlias($extends);
+    if (!targetId) {
+      this.error(`Invalid $extends value ${JSON.stringify($extends)}`);
+      return rest;
+    }
+    if (seen.has(targetId)) {
+      this.error(`Circular $extends at "${targetId}"`);
+      return rest;
+    }
+    seen.add(targetId);
+    const targetPath = targetId.split(".");
+    let target = this.getGroup(targetPath);
+    if (!target) {
+      this.error(`Unknown group "${targetId}"`);
+      return rest;
+    }
+    if (target.$extends !== undefined) {
+      target = this.applyExtends(target, seen);
+    }
+    return mergeTrees(target, rest);
   }
 }
 
 /** adds all tokens of a token document to `tokens` (existing ids are overridden) */
-export function flattenTokens(root: JsonObject, tokens: TokenMap = new Map()): TokenMap {
-  walk(root, root, [], undefined, tokens);
+export function flattenTokens(
+  root: JsonObject,
+  diagnostics: TokenDiagnostic[],
+  where?: string | undefined,
+  tokens: TokenMap = new Map(),
+): TokenMap {
+  const ctx = new Walk({ root, where, diagnostics });
+  ctx.walk((t) => {
+    if (tokens.has(t.id)) {
+      ctx.warning(`Duplicate token id "${t.id}"`);
+    }
+    tokens.set(t.id, t);
+  });
   return tokens;
 }
 
