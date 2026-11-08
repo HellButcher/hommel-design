@@ -1,5 +1,6 @@
 import { defineConfig } from "@hommel/tokens-generator";
 import css from "@hommel/tokens-generator-css";
+import flutter from "@hommel/tokens-generator-flutter";
 
 export default defineConfig({
   resolver: "./src/hommel-design.resolver.json",
@@ -29,6 +30,9 @@ export default defineConfig({
         theme: { dark: "(prefers-color-scheme: dark)" },
         motion: { reduced: "(prefers-reduced-motion: reduce)" },
       },
+    }),
+    flutter({
+      filename: "design_tokens.dart",
     }),
   ],
 });

@@ -2,23 +2,15 @@
   "name": "@hommel/design-tokens",
   "version": "0.1.0",
   "license": "MIT",
-  "author": {
-    "name": "Christoph Hommelsheim",
-    "url": "https://hommel.dev"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HellButcher/hommel-design"
   },
-  "style": "dist/index.css",
-  "files": [
-    "dist/",
-    "src/"
-  ],
+  "author": {
+    "name": "Christoph Hommelsheim",
+    "url": "https://hommel.dev"
+  },
   "type": "module",
-  "sideEffects": [
-    "dist/index.css"
-  ],
   "main": "dist/index.css",
   "exports": {
     ".": {
@@ -33,6 +25,10 @@
     },
     "./src/": "./src/"
   },
+  "files": [
+    "dist/",
+    "src/"
+  ],
   "scripts": {
     "build": "hommel-tokens-generator build",
     "check": "hommel-tokens-generator check",
@@ -40,6 +36,11 @@
   },
   "devDependencies": {
     "@hommel/tokens-generator": "workspace:",
-    "@hommel/tokens-generator-css": "workspace:"
-  }
+    "@hommel/tokens-generator-css": "workspace:",
+    "@hommel/tokens-generator-flutter": "workspace:"
+  },
+  "style": "dist/index.css",
+  "sideEffects": [
+    "dist/index.css"
+  ]
 }

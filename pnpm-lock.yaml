@@ -187,6 +187,9 @@ importers:
       '@hommel/tokens-generator-css':
         specifier: 'workspace:'
         version: link:../tokens-generator-css
+      '@hommel/tokens-generator-flutter':
+        specifier: 'workspace:'
+        version: link:../tokens-generator-flutter
 
   packages/tokens-generator:
     dependencies:
@@ -195,6 +198,12 @@ importers:
         version: 0.7.1
 
   packages/tokens-generator-css:
+    dependencies:
+      '@hommel/tokens-generator':
+        specifier: 'workspace:'
+        version: link:../tokens-generator
+
+  packages/tokens-generator-flutter:
     dependencies:
       '@hommel/tokens-generator':
         specifier: 'workspace:'

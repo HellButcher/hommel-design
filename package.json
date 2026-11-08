@@ -3,13 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "license": "MIT",
-  "author": {
-    "name": "Christoph Hommelsheim",
-    "url": "https://hommel.dev"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/HellButcher/hommel-design"
+  },
+  "author": {
+    "name": "Christoph Hommelsheim",
+    "url": "https://hommel.dev"
   },
   "type": "module",
   "main": "index.js",
