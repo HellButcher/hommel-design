@@ -6,7 +6,7 @@ import {
   parseAlias,
   type TokenType,
 } from "./token-values.ts";
-import type { Severity, Token, TokenDiagnostic, TokenMap } from "./types.ts";
+import type { DiagnosticSource, Severity, Token, TokenDiagnostic, TokenMap } from "./types.ts";
 
 export type JsonObject = Record<string, unknown>;
 
@@ -52,7 +52,7 @@ export function mergeTrees(base: JsonObject, override: JsonObject): JsonObject {
 
 class Walk {
   diagnostics: TokenDiagnostic[];
-  where?: string | undefined;
+  where?: DiagnosticSource;
   path: string[];
   root: JsonObject;
   constructor({
@@ -61,12 +61,12 @@ class Walk {
     diagnostics = [],
   }: {
     root: JsonObject;
-    where?: string | undefined;
+    where?: DiagnosticSource | undefined;
     diagnostics?: TokenDiagnostic[] | undefined;
   }) {
     this.root = root;
     this.diagnostics = diagnostics;
-    this.where = where;
+    this.where = where || {};
     this.path = [];
   }
 
@@ -74,8 +74,7 @@ class Walk {
     this.diagnostics.push({
       severity,
       message,
-      where: this.where,
-      token: this.path.join(".") || "<root>",
+      source: [{ ...this.where, token: this.path.join(".") || "<root>" }],
     });
   }
   error(message: string) {
@@ -212,7 +211,7 @@ class Walk {
 export function flattenTokens(
   root: JsonObject,
   diagnostics: TokenDiagnostic[],
-  where?: string | undefined,
+  where?: DiagnosticSource | undefined,
   tokens: TokenMap = new Map(),
 ): TokenMap {
   const ctx = new Walk({ root, where, diagnostics });

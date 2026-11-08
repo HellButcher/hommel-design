@@ -1,5 +1,7 @@
 /** DTCG 2025.10 token value types, keyed by `$type` */
 
+import ColorJsColor from "colorjs.io";
+
 export type Alias = `{${string}}`;
 export type ValueOrAlias<T> = T | Alias;
 
@@ -279,6 +281,27 @@ export function isColor(value: unknown): value is ColorValue {
     (value.alpha === undefined ||
       (isFiniteNumber(value.alpha) && value.alpha >= 0 && value.alpha <= 1)) &&
     (value.hex === undefined || typeof value.hex === "string")
+  );
+}
+
+/** DTCG colorSpace ids that differ from colorjs.io ids */
+const COLORJS_SPACES: Readonly<Partial<Record<ColorSpace, string>>> = {
+  "display-p3": "p3",
+  "a98-rgb": "a98rgb",
+  "prophoto-rgb": "prophoto",
+};
+
+/** converts a DTCG color value to a colorjs.io `Color` instance */
+export function toColor(value: ColorValue): ColorJsColor {
+  const coords = value.components.map((c) => (c === "none" ? null : c)) as [
+    number | null,
+    number | null,
+    number | null,
+  ];
+  return new ColorJsColor(
+    COLORJS_SPACES[value.colorSpace] ?? value.colorSpace,
+    coords,
+    value.alpha ?? 1,
   );
 }
 

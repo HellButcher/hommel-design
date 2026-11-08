@@ -1,53 +1,14 @@
+import type { Algorithms } from "colorjs.io/src/contrast/index.js";
+
 import type { TokenDocument } from "./load.ts";
-import { isObject } from "./token-values.ts";
+import { isColor, toColor } from "./token-values.ts";
 import { resolveToken } from "./tokens.ts";
-import type { TokenDiagnostic, TokenMap, ValidationConfig } from "./types.ts";
+import type { Token } from "./types.ts";
+import type { ContrastConfig, ValidationConfig } from "./types.ts";
 
-function colorChannels(id: string, tokens: TokenMap): [number, number, number] | undefined {
-  const token = resolveToken(id, tokens);
-  if (token.type !== "color" || !isObject(token.value) || token.value.colorSpace !== "srgb") {
-    return undefined;
-  }
-  const components = token.value.components;
-  if (!Array.isArray(components) || components.length !== 3 || !components.every(Number.isFinite)) {
-    return undefined;
-  }
-  return [components[0]!, components[1]!, components[2]!];
-}
+export type ContrastAlgorithm = Algorithms;
 
-function luminance(channels: [number, number, number]): number {
-  const linear = channels.map((channel) =>
-    channel <= 0.04045 ? channel / 12.92 : ((channel + 0.055) / 1.055) ** 2.4,
-  );
-  return 0.2126 * linear[0]! + 0.7152 * linear[1]! + 0.0722 * linear[2]!;
-}
-
-function contrastRatio(foreground: string, background: string, tokens: TokenMap) {
-  const fg = colorChannels(foreground, tokens);
-  const bg = colorChannels(background, tokens);
-  if (!fg || !bg) return undefined;
-  const first = luminance(fg);
-  const second = luminance(bg);
-  return (Math.max(first, second) + 0.05) / (Math.min(first, second) + 0.05);
-}
-
-function contextInputs(document: TokenDocument, visit: (input: Record<string, string>) => void) {
-  const modifiers = document.resolutionOrder.filter((item) => item.type === "modifier");
-  const walk = (index: number, input: Record<string, string>) => {
-    if (index === modifiers.length) {
-      visit(input);
-      return;
-    }
-    const modifier = modifiers[index]!;
-    for (const context of Object.keys(modifier.contexts)) {
-      walk(index + 1, { ...input, [modifier.name]: context });
-    }
-  };
-  walk(0, {});
-}
-
-function checkNames(document: TokenDocument): TokenDiagnostic[] {
-  const diagnostics: TokenDiagnostic[] = [];
+function checkNames(document: TokenDocument) {
   const tokens = new Map(
     document.resolutionOrder.flatMap((item) =>
       item.type === "set"
@@ -57,85 +18,73 @@ function checkNames(document: TokenDocument): TokenDiagnostic[] {
   );
   for (const token of tokens.values()) {
     if (!/^(?:[a-z0-9]+(?:[-.][a-z0-9]+)*)$/.test(token.id)) {
-      diagnostics.push({
-        severity: "warning",
-        message: "Token name is not kebab-case",
-        token: token.id,
-        where: token.source,
-      });
+      document.warning("Token name is not kebab-case", token);
     }
   }
-  return diagnostics;
 }
 
-function checkContextParity(document: TokenDocument): TokenDiagnostic[] {
-  const diagnostics: TokenDiagnostic[] = [];
-  for (const item of document.resolutionOrder) {
-    if (item.type !== "modifier") continue;
-    const contexts = Object.entries(item.contexts);
-    const first = contexts[0];
-    if (!first) continue;
-    const expected = [...first[1].keys()].sort();
-    for (const [name, tokens] of contexts.slice(1)) {
-      const actual = [...tokens.keys()].sort();
-      if (expected.length !== actual.length || expected.some((id, index) => id !== actual[index])) {
-        diagnostics.push({
-          severity: "warning",
-          message: `Context token names differ from "${first[0]}"`,
-          where: `modifier "${item.name}" context "${name}"`,
-        });
-      }
-    }
-  }
-  return diagnostics;
+function contrastRatio(fgToken: Token, bgToken: Token, algorithm: ContrastAlgorithm = "WCAG21") {
+  if (fgToken.type !== "color" || !isColor(fgToken.value)) return undefined;
+  if (bgToken.type !== "color" || !isColor(bgToken.value)) return undefined;
+  const fgColor = toColor(fgToken.value);
+  const bgColor = toColor(bgToken.value);
+  return fgColor.contrast(bgColor, algorithm);
 }
 
-function checkContrast(document: TokenDocument, config: NonNullable<ValidationConfig["contrast"]>) {
-  const diagnostics: TokenDiagnostic[] = [];
+function checkContrast(document: TokenDocument, config: ContrastConfig) {
   const minimum = config.minimum ?? 4.5;
   if (!Number.isFinite(minimum) || minimum <= 1) {
-    return [
-      {
-        severity: "error",
-        message: "Contrast minimum must be a finite number greater than 1",
-      } satisfies TokenDiagnostic,
-    ];
+    document.error(`Invalid contrast minimum ${minimum}`);
+    return;
   }
-  contextInputs(document, (input) => {
+  if (!config.pairs?.length) return;
+  for (const pair of config.pairs) {
+    if (pair.minimum !== undefined && (!Number.isFinite(pair.minimum) || pair.minimum <= 1)) {
+      document.warning(
+        `Invalid contrast minimum ${pair.minimum} for pair ${pair.foreground} on ${pair.background}`,
+      );
+      delete pair.minimum;
+    }
+  }
+  for (const input of document.allModifierPermutations) {
     const tokens = document.resolve(input);
     for (const pair of config.pairs) {
-      if (!tokens.has(pair.foreground) || !tokens.has(pair.background)) continue;
-      const ratio = contrastRatio(pair.foreground, pair.background, tokens);
+      const pair_minimum = pair.minimum ?? minimum;
+      let fgToken;
+      try {
+        fgToken = resolveToken(pair.foreground, tokens);
+      } catch (error) {
+        document.warning(
+          `Foreground token "${pair.foreground}" could not be resolved for input "${JSON.stringify(input)}: ${(error as Error).message}`,
+        );
+        fgToken = undefined;
+      }
+      let bgToken;
+      try {
+        bgToken = resolveToken(pair.background, tokens);
+      } catch (error) {
+        document.warning(
+          `Background token "${pair.background}" could not be resolved for input "${JSON.stringify(input)}: ${(error as Error).message}`,
+        );
+        bgToken = undefined;
+      }
+      if (!fgToken || !bgToken) continue;
+      const ratio = contrastRatio(fgToken, bgToken, config.algorithm);
       if (ratio === undefined) {
-        diagnostics.push({
-          severity: "warning",
-          message: "Contrast could not be calculated for non-sRGB color values",
-          token: `${pair.foreground} on ${pair.background}`,
-        });
-      } else if (ratio < minimum) {
-        diagnostics.push({
-          severity: "warning",
-          message: `Contrast ${ratio.toFixed(2)}:1 is below ${minimum}:1`,
-          token: `${pair.foreground} on ${pair.background}`,
-        });
+        document.warning(
+          `Contrast could not be calculated for the given color values with input ${JSON.stringify(input)}`,
+        );
+      } else if (ratio < pair_minimum) {
+        document.warning(
+          `Contrast ${ratio.toFixed(2)} for pair ${pair.foreground} on ${pair.background} is below ${pair_minimum} with input ${JSON.stringify(input)}`,
+        );
       }
     }
-  });
-  return diagnostics;
+  }
 }
 
 /** combines parse/load diagnostics with the optional configured checks */
-export function validateDocument(
-  document: TokenDocument,
-  config: ValidationConfig = {},
-): TokenDiagnostic[] {
-  const diagnostics = [...document.diagnostics, ...checkContextParity(document)];
-  if (config.kebabCase) diagnostics.push(...checkNames(document));
-  if (config.contrast) diagnostics.push(...checkContrast(document, config.contrast));
-  const unique = new Map<string, TokenDiagnostic>();
-  for (const diagnostic of diagnostics) {
-    const key = `${diagnostic.severity}:${diagnostic.where ?? ""}:${diagnostic.token ?? ""}:${diagnostic.message}`;
-    unique.set(key, diagnostic);
-  }
-  return [...unique.values()];
+export function checkDocument(document: TokenDocument, config: ValidationConfig = {}) {
+  if (config.kebabCase) checkNames(document);
+  if (config.contrast) checkContrast(document, config.contrast);
 }

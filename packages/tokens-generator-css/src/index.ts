@@ -7,7 +7,7 @@ import {
 } from "@hommel/tokens-generator";
 
 import { propertyRules } from "./property.ts";
-import { kebabCase, toCss, TYPOGRAPHY_KEYS, typographyProperties, type VarName } from "./values.ts";
+import { kebabCase, toCss, typographyProperties, type VarName } from "./values.ts";
 
 export const PLUGIN_NAME = "@hommel/tokens-generator-css";
 
@@ -34,7 +34,10 @@ export default function css(options: CssPluginOptions = {}): Plugin {
     const subVarName = (key: keyof TypographyValue) => varName(`${token.id}.${key}`);
     const props = typographyProperties(token.value, varName);
     return [
-      ...TYPOGRAPHY_KEYS.map((key): [string, string] => [subVarName(key), props[key]]),
+      ...Object.entries(props).map(([key, value]): [string, string] => [
+        subVarName(key as keyof TypographyValue),
+        value,
+      ]),
       [
         name,
         `var(${subVarName("fontWeight")}) var(${subVarName("fontSize")})/var(${subVarName("lineHeight")}) var(${subVarName("fontFamily")})`,

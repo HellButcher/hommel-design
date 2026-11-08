@@ -18,5 +18,8 @@
   "main": "src/index.ts",
   "exports": {
     ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "colorjs.io": "^0.7.1"
   }
 }

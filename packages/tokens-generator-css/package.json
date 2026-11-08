@@ -17,7 +17,6 @@
     ".": "./src/index.ts"
   },
   "dependencies": {
-    "@hommel/tokens-generator": "workspace:",
-    "colorjs.io": "^0.7.1"
+    "@hommel/tokens-generator": "workspace:"
   }
 }

@@ -1,12 +1,13 @@
 import type { TokenDocument } from "./load.ts";
 import type { TypedValue, UntypedValue } from "./token-values.ts";
+import type { ContrastAlgorithm } from "./validate.ts";
 
 export interface TokenBase {
   /** dot separated path, e.g. `color.action.primary` (`$root` tokens use the group path) */
   id: string;
   /** set when the whole `$value` is an alias */
   aliasOf?: string | undefined;
-  source?: string | undefined;
+  source?: DiagnosticSource | undefined;
   description?: string | undefined;
   extensions?: Record<string, unknown> | undefined;
   deprecated?: boolean | string | undefined;
@@ -28,7 +29,7 @@ export interface ResolverModifier {
   type: "modifier";
   name: string;
   description?: string | undefined;
-  default?: string | undefined;
+  default: string;
   contexts: Record<string, TokenMap>;
 }
 
@@ -38,24 +39,39 @@ export type ModifierInput = Record<string, string>;
 
 export type Severity = "error" | "warning";
 
+export interface Source {
+  /** set or modifier/context name */
+  context?: string | undefined;
+  file?: string | undefined;
+}
+
+export interface DiagnosticSource extends Source {
+  token?: string | undefined;
+}
+
 export interface TokenDiagnostic {
   severity: Severity;
   message: string;
-  token?: string | undefined;
-  where?: string | undefined;
+  source?: DiagnosticSource[];
 }
+
+export type AnyDiagnosticSource = string | DiagnosticSource | Token;
 
 export interface ContrastPair {
   foreground: string;
   background: string;
+  minimum?: number;
+}
+
+export interface ContrastConfig {
+  minimum?: number;
+  algorithm?: ContrastAlgorithm | undefined;
+  pairs: ContrastPair[];
 }
 
 export interface ValidationConfig {
   kebabCase?: boolean;
-  contrast?: {
-    minimum?: number;
-    pairs: ContrastPair[];
-  };
+  contrast?: ContrastConfig;
 }
 
 export interface BuildContext {

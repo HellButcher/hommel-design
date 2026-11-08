@@ -188,16 +188,17 @@ importers:
         specifier: 'workspace:'
         version: link:../tokens-generator-css
 
-  packages/tokens-generator: {}
+  packages/tokens-generator:
+    dependencies:
+      colorjs.io:
+        specifier: ^0.7.1
+        version: 0.7.1
 
   packages/tokens-generator-css:
     dependencies:
       '@hommel/tokens-generator':
         specifier: 'workspace:'
         version: link:../tokens-generator
-      colorjs.io:
-        specifier: ^0.7.1
-        version: 0.7.1
 
 packages:
 

@@ -1,6 +1,6 @@
 import {
   parseAlias,
-  type ColorSpace,
+  toColor,
   type ColorValue,
   type FontWeightKeyword,
   type TypedValue,
@@ -8,16 +8,8 @@ import {
   type UntypedValue,
   type ValueOrAlias,
 } from "@hommel/tokens-generator";
-import Color from "colorjs.io";
 
 export type VarName = (id: string) => string;
-
-/** DTCG colorSpace ids that differ from colorjs.io ids */
-const COLOR_SPACES: Readonly<Partial<Record<ColorSpace, string>>> = {
-  "display-p3": "p3",
-  "a98-rgb": "a98rgb",
-  "prophoto-rgb": "prophoto",
-};
 
 const FONT_WEIGHTS: Readonly<Record<FontWeightKeyword, number>> = {
   thin: 100,
@@ -61,12 +53,7 @@ export function kebabCase(s: string): string {
 }
 
 function color(value: ColorValue): string {
-  const coords = value.components.map((c) => (c === "none" ? null : c)) as [number, number, number];
-  return new Color(
-    COLOR_SPACES[value.colorSpace] ?? value.colorSpace,
-    coords,
-    value.alpha ?? 1,
-  ).toString();
+  return toColor(value).toString();
 }
 
 function fontFamily(name: string): string {
@@ -166,14 +153,6 @@ export function toCss(v: TypedValue | UntypedValue, varName: VarName): string {
       });
   }
 }
-
-export const TYPOGRAPHY_KEYS: (keyof TypographyValue)[] = [
-  "fontFamily",
-  "fontSize",
-  "fontWeight",
-  "letterSpacing",
-  "lineHeight",
-];
 
 /** CSS values of the typography properties */
 export function typographyProperties(

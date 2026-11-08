@@ -12,6 +12,9 @@ import type {
   TokenDiagnostic,
   Severity,
   ResolverSet,
+  DiagnosticSource,
+  AnyDiagnosticSource,
+  Source,
 } from "./types.ts";
 
 export const DTCG_VERSION_2025_10 = "2025.10";
@@ -87,9 +90,9 @@ class RefResolver {
         diagnostics.push({
           severity: "error",
           message: (error as Error).message,
-          where: `${file}#${$ref}`,
+          source: [{ file }],
         });
-        return undefined;
+        return rest;
       }
     }
     const entries = await Promise.all(
@@ -101,74 +104,24 @@ class RefResolver {
   }
 }
 
-function sourcesToTokens(
-  sources: unknown,
-  where: string,
-  diagnostics: TokenDiagnostic[],
-): TokenMap {
-  const tokens: TokenMap = new Map();
-  if (!Array.isArray(sources)) {
-    diagnostics.push({ severity: "error", message: `Expected an array of sources in ${where}` });
-    return tokens;
+function normalizeDiagnosticSource(
+  source?: AnyDiagnosticSource | AnyDiagnosticSource[],
+): DiagnosticSource[] {
+  if (!source) return [];
+  function normalizeItem(item: AnyDiagnosticSource): DiagnosticSource {
+    if (typeof item === "string") return { file: item };
+    if ("id" in item) return { ...item.source, token: item.id };
+    return item;
   }
-  for (const [index, source] of sources.entries()) {
-    if (!isObject(source)) {
-      diagnostics.push({
-        severity: "error",
-        message: `Invalid source ${index} in ${where}`,
-        where,
-      });
-      continue;
-    }
-    flattenTokens(source, diagnostics, where, tokens);
+  if (typeof source === "string") {
+    return [{ file: source }];
+  } else if (Array.isArray(source)) {
+    return source.map(normalizeItem);
+  } else if (source !== undefined) {
+    return [normalizeItem(source)];
+  } else {
+    return [];
   }
-  return tokens;
-}
-
-async function loadItem(
-  raw: unknown,
-  file: string,
-  refs: RefResolver,
-  diagnostics: TokenDiagnostic[],
-): Promise<ResolutionItem> {
-  if (!isObject(raw)) throw new Error(`Invalid resolutionOrder entry in ${file}`);
-  let kind: unknown;
-  let name: unknown;
-  if (typeof raw.$ref === "string") {
-    const [section, ...rest] = parsePointer(raw.$ref.split("#")[1] ?? "");
-    kind = section === "sets" ? "set" : section === "modifiers" ? "modifier" : undefined;
-    name = rest.at(-1);
-  }
-  const resolved = await refs.resolve(raw, file, diagnostics);
-  if (!isObject(resolved)) throw new Error(`Invalid resolutionOrder entry in ${file}`);
-  const def = resolved;
-  kind = def.type ?? kind;
-  name = def.name ?? name;
-  if (typeof name !== "string") throw new Error(`Missing name of resolutionOrder entry in ${file}`);
-  const description = def.description as string | undefined;
-
-  if (kind === "set") {
-    return {
-      type: "set",
-      name,
-      description,
-      tokens: sourcesToTokens(def.sources, `set "${name}"`, diagnostics),
-    };
-  }
-  if (kind === "modifier") {
-    if (!isObject(def.contexts)) throw new Error(`Missing contexts in modifier "${name}"`);
-    const contexts: Record<string, TokenMap> = {};
-    for (const [ctx, sources] of Object.entries(def.contexts)) {
-      contexts[ctx] = sourcesToTokens(sources, `modifier "${name}" context "${ctx}"`, diagnostics);
-    }
-    if (Object.keys(contexts).length === 0) throw new Error(`Modifier "${name}" has no contexts`);
-    const defaultContext = def.default as string | undefined;
-    if (defaultContext !== undefined && !(defaultContext in contexts)) {
-      throw new Error(`Unknown default context "${defaultContext}" in modifier "${name}"`);
-    }
-    return { type: "modifier", name, description, default: defaultContext, contexts };
-  }
-  throw new Error(`Unknown type ${JSON.stringify(kind)} of resolutionOrder entry "${name}"`);
 }
 
 export class TokenDocument {
@@ -179,19 +132,117 @@ export class TokenDocument {
   resolutionOrder: ResolutionItem[] = [];
   /** modifier name -> default context (first context when the modifier has no default) */
   defaultInput: ModifierInput = {};
+  /** all possible modifier permutations */
+  allModifierPermutations: ModifierInput[] = [{}];
   /** tokens resolved using the default modifier input */
   defaultTokens: TokenMap = new Map();
   constructor(file: string | undefined) {
     this.file = file;
   }
-  diagnostic(severity: Severity, message: string, where?: string) {
-    this.diagnostics.push({ severity, message, where });
+  diagnostic(
+    severity: Severity,
+    message: string,
+    source?: AnyDiagnosticSource | AnyDiagnosticSource[],
+  ) {
+    this.diagnostics.push({ severity, message, source: normalizeDiagnosticSource(source) });
   }
-  error(message: string, where?: string) {
-    this.diagnostic("error", message, where);
+  error(message: string, source?: AnyDiagnosticSource | AnyDiagnosticSource[]) {
+    this.diagnostic("error", message, source);
   }
-  warning(message: string, where?: string) {
-    this.diagnostic("warning", message, where);
+  warning(message: string, source?: AnyDiagnosticSource | AnyDiagnosticSource[]) {
+    this.diagnostic("warning", message, source);
+  }
+
+  private sourcesToTokens(sources: unknown, where: Source): TokenMap {
+    const tokens: TokenMap = new Map();
+    if (!Array.isArray(sources)) {
+      this.error(`Expected an array of sources`, where);
+      return tokens;
+    }
+    for (const [index, source] of sources.entries()) {
+      if (!isObject(source)) {
+        this.error(`Invalid source ${index}`, where);
+        continue;
+      }
+      flattenTokens(source, this.diagnostics, where, tokens);
+    }
+    return tokens;
+  }
+
+  private async loadItem(
+    raw: unknown,
+    file: string,
+    refs: RefResolver,
+  ): Promise<ResolutionItem | undefined> {
+    if (!isObject(raw)) {
+      this.error(`Invalid resolutionOrder entry`, { file });
+      return undefined;
+    }
+    let kind: unknown;
+    let name: unknown;
+    if (typeof raw.$ref === "string") {
+      const [section, ...rest] = parsePointer(raw.$ref.split("#")[1] ?? "");
+      kind = section === "sets" ? "set" : section === "modifiers" ? "modifier" : undefined;
+      name = rest.at(-1);
+    }
+    const resolved = await refs.resolve(raw, file, this.diagnostics);
+    if (!isObject(resolved)) {
+      this.error(`Invalid resolutionOrder entry`, { file });
+      return undefined;
+    }
+    const def = resolved;
+    kind = def.type ?? kind;
+    name = def.name ?? name;
+    if (typeof name !== "string") {
+      this.error(`Missing name of resolutionOrder entry`, { file });
+      return undefined;
+    }
+    const description = def.description as string | undefined;
+
+    if (kind === "set") {
+      const item: ResolutionItem = {
+        type: "set",
+        name,
+        description,
+        tokens: this.sourcesToTokens(def.sources, { context: `set:${name}`, file }),
+      };
+      this.resolutionOrder.push(item);
+      return item;
+    }
+    if (kind === "modifier") {
+      if (!isObject(def.contexts)) {
+        this.error(`Missing contexts in modifier "${name}"`, { file });
+        return undefined;
+      }
+      const contexts: Record<string, TokenMap> = {};
+      for (const [ctx, sources] of Object.entries(def.contexts)) {
+        contexts[ctx] = this.sourcesToTokens(sources, { context: `modifier:${name}/${ctx}`, file });
+      }
+      const contextKeys = Object.keys(contexts);
+      if (contextKeys.length === 0) {
+        this.error(`Modifier "${name}" has no contexts`, { file });
+        return undefined;
+      }
+      let defaultContext = def.default as string | undefined;
+      if (defaultContext !== undefined && !(defaultContext in contexts)) {
+        this.error(
+          `Unknown default context "${JSON.stringify(defaultContext)}" in modifier "${name}"`,
+          { file },
+        );
+        defaultContext = undefined;
+      }
+      const item: ResolutionItem = {
+        type: "modifier",
+        name,
+        description,
+        default: defaultContext ?? contextKeys[0]!,
+        contexts,
+      };
+      this.resolutionOrder.push(item);
+      return item;
+    }
+    this.error(`Unknown type ${JSON.stringify(kind)} of resolutionOrder entry "${name}"`, { file });
+    return undefined;
   }
 
   /** loads a DTCG 2025.10 resolver document and all referenced token files */
@@ -225,28 +276,21 @@ export class TokenDocument {
     } else if (resolverDoc.description !== undefined) {
       doc.warning(`Document has an invalid description. must be a string`, file);
     }
-    const loadedItems = await Promise.all(
-      resolverDoc.resolutionOrder.map(async (item) => {
-        try {
-          return await loadItem(item, file, refs, doc.diagnostics);
-        } catch (error) {
-          doc.error((error as Error).message, file);
-          return undefined;
-        }
-      }),
-    );
-    doc.resolutionOrder = loadedItems.filter((item): item is ResolutionItem => item !== undefined);
+
+    // loaded sequentially so resolutionOrder preserves the declared order
+    for (const item of resolverDoc.resolutionOrder) {
+      await doc.loadItem(item, file, refs);
+    }
 
     for (const m of doc.modifiers) {
-      let ctx = Object.keys(m.contexts)[0];
-      if (m.default !== undefined) {
-        if (typeof m.default === "string") {
-          ctx = m.default;
-        } else {
-          doc.warning(`Default value for modifier "${m.name}" must be a string`, file);
+      doc.defaultInput[m.name] = m.default;
+      const newPermutations: ModifierInput[] = [];
+      for (const context of Object.keys(m.contexts)) {
+        for (const permutation of doc.allModifierPermutations) {
+          newPermutations.push({ ...permutation, [m.name]: context });
         }
       }
-      if (ctx !== undefined) doc.defaultInput[m.name] = ctx;
+      doc.allModifierPermutations = newPermutations;
     }
 
     doc.defaultTokens = doc.resolve(doc.defaultInput);
@@ -263,21 +307,32 @@ export class TokenDocument {
     return doc;
   }
 
-  resolve(input: ModifierInput = {}): TokenMap {
-    const merged: TokenMap = new Map();
+  private getTokenMapsForInput(input: ModifierInput): TokenMap[] {
+    const maps: TokenMap[] = [];
     for (const item of this.resolutionOrder) {
-      let tokens: TokenMap | undefined;
       if (item.type === "set") {
-        tokens = item.tokens;
+        maps.push(item.tokens);
       } else {
         const ctx = input[item.name] ?? item.default;
         if (ctx === undefined) throw new Error(`Missing input for modifier "${item.name}"`);
-        tokens = item.contexts[ctx];
+        const tokens = item.contexts[ctx];
         if (!tokens) throw new Error(`Unknown context "${ctx}" for modifier "${item.name}"`);
+        maps.push(tokens);
       }
+    }
+    return maps;
+  }
+
+  resolve(input: ModifierInput = {}): TokenMap {
+    const merged: TokenMap = new Map();
+    for (const tokens of this.getTokenMapsForInput(input)) {
       for (const [id, token] of tokens) merged.set(id, token);
     }
     return merged;
+  }
+
+  resolveToken(id: string, input: ModifierInput = {}): Token | undefined {
+    return resolveToken(id, this.getTokenMapsForInput(input));
   }
 
   get modifiers() {
@@ -330,24 +385,20 @@ export class TokenDocument {
               const key = `type:${token.id}:${alias.id}`;
               if (!diagnosed.has(key)) {
                 diagnosed.add(key);
-                this.diagnostics.push({
-                  severity: "warning",
-                  message: `Token type ${token.type} differs from aliased token type ${target.type}`,
-                  token: token.id,
-                  where: token.source,
-                });
+                this.warning(
+                  `Token type ${token.type} differs from aliased token type ${target.type}`,
+                  token,
+                );
               }
             }
           } catch (error) {
             const key = `reference:${token.id}:${alias.id}`;
             if (!diagnosed.has(key)) {
               diagnosed.add(key);
-              this.diagnostics.push({
-                severity: "error",
-                message: (error as Error).message,
-                token: token.id,
-                where: token.source,
-              });
+              this.error(
+                `Failed to resolve alias ${alias.id} for token ${token.id}: ${(error as Error).message}`,
+                token,
+              );
             }
             removeToken(token);
           }
