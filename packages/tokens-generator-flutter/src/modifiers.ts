@@ -175,7 +175,10 @@ export function generateContextClasses(
   remPx: number,
 ): string[] {
   const fields = info.ownedIds.map((id) => ({ id, name: nameFor(id) }));
-  const ref = createValueRef(classification, nameFor, { kind: "variant", modifierName: info.modifier.name });
+  const ref = createValueRef(classification, nameFor, {
+    kind: "variant",
+    modifierName: info.modifier.name,
+  });
   const abstractBody = fields
     .map(({ id, name }) => `  /// token id: ${id}\n  ${dartTypeOf(document, id)} get ${name};`)
     .join("\n\n");
@@ -198,7 +201,6 @@ export function generateContextClasses(
   }
   return output;
 }
-
 
 function dartTypeOf(document: TokenDocument, id: string): string {
   const token = document.defaultTokens.get(id) as Token;

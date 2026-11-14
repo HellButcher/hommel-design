@@ -95,7 +95,9 @@ function escapeReserved(name: string): string {
 /** dotted/kebab token id -> dartLowerCamelCase identifier (e.g. `color.action.primary` -> `colorActionPrimary`) */
 export function camelCase(id: string): string {
   const parts = words(id);
-  return escapeReserved(parts.map((part, i) => (i === 0 ? lowerFirst(part) : upperFirst(part))).join(""));
+  return escapeReserved(
+    parts.map((part, i) => (i === 0 ? lowerFirst(part) : upperFirst(part))).join(""),
+  );
 }
 
 /** dotted/kebab token id (or name) -> DartPascalCase identifier (e.g. `theme` -> `Theme`) */

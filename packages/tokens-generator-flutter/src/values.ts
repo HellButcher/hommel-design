@@ -146,14 +146,12 @@ export function toDart(v: TypedValue | UntypedValue, options: DartConvertOptions
     case "strokeStyle":
       return refOrValue(v.value, borderStyleExpr);
     case "border":
-      return refOrValue(
-        v.value,
-        (b) =>
-          maybeConst(
-            `TokenBorderValue(${dart({ type: "color", value: b.color })}, ` +
-              `${dart({ type: "dimension", value: b.width })}, ` +
-              `${dart({ type: "strokeStyle", value: b.style })})`,
-          ),
+      return refOrValue(v.value, (b) =>
+        maybeConst(
+          `TokenBorderValue(${dart({ type: "color", value: b.color })}, ` +
+            `${dart({ type: "dimension", value: b.width })}, ` +
+            `${dart({ type: "strokeStyle", value: b.style })})`,
+        ),
       );
     case "shadow":
       return refOrValue(v.value, (shadow) => {
@@ -173,14 +171,12 @@ export function toDart(v: TypedValue | UntypedValue, options: DartConvertOptions
         return maybeConst(`[${items.join(", ")}]`);
       });
     case "transition":
-      return refOrValue(
-        v.value,
-        (t) =>
-          maybeConst(
-            `TokenTransitionValue(${dart({ type: "duration", value: t.duration })}, ` +
-              `${dart({ type: "duration", value: t.delay })}, ` +
-              `${dart({ type: "cubicBezier", value: t.timingFunction })})`,
-          ),
+      return refOrValue(v.value, (t) =>
+        maybeConst(
+          `TokenTransitionValue(${dart({ type: "duration", value: t.duration })}, ` +
+            `${dart({ type: "duration", value: t.delay })}, ` +
+            `${dart({ type: "cubicBezier", value: t.timingFunction })})`,
+        ),
       );
     case "gradient":
       return refOrValue(v.value, (stops) => {
@@ -190,7 +186,9 @@ export function toDart(v: TypedValue | UntypedValue, options: DartConvertOptions
         const positions = stops.map((stop) =>
           refOrValue(stop, (s) => dart({ type: "number", value: s.position })),
         );
-        return maybeConst(`LinearGradient(colors: [${colors.join(", ")}], stops: [${positions.join(", ")}])`);
+        return maybeConst(
+          `LinearGradient(colors: [${colors.join(", ")}], stops: [${positions.join(", ")}])`,
+        );
       });
     case "typography":
       return refOrValue(v.value, (t) => maybeConst(typographyExpr(t, options)));
