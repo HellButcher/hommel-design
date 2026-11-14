@@ -4,7 +4,7 @@ import { pathToFileURL } from "node:url";
 import { parseArgs } from "node:util";
 
 import { build } from "./build.ts";
-import { TokenDocument } from "./load.ts";
+import { loadTokenDocument } from "./load.ts";
 import type { Config, DiagnosticSource, TokenDiagnostic } from "./types.ts";
 import { checkDocument } from "./validate.ts";
 
@@ -63,9 +63,7 @@ async function main(args: string[]) {
   const { default: config } = (await import(pathToFileURL(configFile).href)) as {
     default: Config;
   };
-  const document = await TokenDocument.load(
-    path.resolve(path.dirname(configFile), config.resolver),
-  );
+  const document = await loadTokenDocument(path.resolve(path.dirname(configFile), config.resolver));
   checkDocument(document, config.validation);
   let hasErrors = false;
   let hasWarnings = false;

@@ -23,6 +23,7 @@ export interface ResolverSet {
   name: string;
   description?: string | undefined;
   tokens: TokenMap;
+  raw: unknown;
 }
 
 export interface ResolverModifier {
@@ -31,6 +32,7 @@ export interface ResolverModifier {
   description?: string | undefined;
   default: string;
   contexts: Record<string, TokenMap>;
+  raw: unknown;
 }
 
 export type ResolutionItem = ResolverSet | ResolverModifier;
@@ -38,6 +40,16 @@ export type ResolutionItem = ResolverSet | ResolverModifier;
 export type ModifierInput = Record<string, string>;
 
 export type Severity = "error" | "warning";
+
+export type TokenResolverDocument = {
+  $schema?: string | undefined;
+  name?: string | undefined;
+  description?: string | undefined;
+  version: string;
+  sets?: Record<string, unknown> | undefined;
+  modifiers?: Record<string, unknown> | undefined;
+  resolutionOrder: unknown[];
+};
 
 export interface Source {
   /** set or modifier/context name */

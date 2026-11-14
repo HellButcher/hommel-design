@@ -1,7 +1,7 @@
 import * as fs from "node:fs/promises";
 import * as path from "node:path";
 
-import type { TokenDocument } from "./load.ts";
+import type { TokenDocument } from "./document.ts";
 import type { Config } from "./types.ts";
 
 export function defineConfig(config: Config): Config {

@@ -1,6 +1,6 @@
 import type { Algorithms } from "colorjs.io/src/contrast/index.js";
 
-import type { TokenDocument } from "./load.ts";
+import type { TokenDocument } from "./document.ts";
 import { isColor, toColor } from "./token-values.ts";
 import { resolveToken } from "./tokens.ts";
 import type { Token } from "./types.ts";
