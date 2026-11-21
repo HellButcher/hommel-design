@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Token } from "@hommel/tokens-generator";
-import { useTokenRef, type TokenRefProps } from "../context.tsx";
+import { useTokenMap, useTokenRef, type TokenRefProps } from "../context.tsx";
 import { ColorSwatch } from "./Color.tsx";
 import { DimensionSample } from "./Dimension.tsx";
 import { BorderSample } from "./Border.tsx";
@@ -67,11 +67,15 @@ export function TokenRow(props: TokenRowProps) {
 }
 
 export interface TokenGridProps {
-  tokens: (Token | string)[];
+  tokens?: (Token | string)[];
 }
 
 /** a list of `TokenRow`s for a collection of tokens (by id or resolved `Token`) */
 export function TokenGrid({ tokens }: TokenGridProps) {
+  if (!tokens) {
+    const tokenMap = useTokenMap();
+    tokens = Array.from(tokenMap.values());
+  }
   return (
     <div className="tb-token-grid">
       {tokens.map((t) => (
