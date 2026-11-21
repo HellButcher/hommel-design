@@ -6,9 +6,9 @@ import * as path from "node:path";
 import { parsePointer, TokenDocument } from "./document.ts";
 import { isObject } from "./token-values.ts";
 import type { JsonObject } from "./tokens.ts";
-import type { TokenDiagnostic } from "./types.ts";
+import type { TokenDiagnostic, IResolver } from "./types.ts";
 
-export class RefResolver {
+export class RefResolver implements IResolver {
   #files = new Map<string, Promise<unknown>>();
 
   static async #parseFile(file: string): Promise<unknown> {

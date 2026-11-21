@@ -1,8 +1,5 @@
-/** browser-safe core: resolution, validation and (de)serialization of an already-loaded token document */
-
-import type { RefResolver } from "./load.ts";
 import { isObject, parseAlias } from "./token-values.ts";
-import { flattenTokens, inferTypes, resolveToken, type JsonObject } from "./tokens.ts";
+import { flattenTokens, inferTypes, resolveToken } from "./tokens.ts";
 import type {
   AnyDiagnosticSource,
   DiagnosticSource,
@@ -16,6 +13,7 @@ import type {
   TokenDiagnostic,
   TokenMap,
   TokenResolverDocument,
+  IResolver,
 } from "./types.ts";
 
 export const DTCG_VERSION_2025_10 = "2025.10";
@@ -108,14 +106,14 @@ export class TokenDocument {
   private async resolveAndLoadItem(
     raw: unknown,
     file: string,
-    refs: RefResolver,
+    refs: IResolver,
   ): Promise<ResolutionItem | undefined> {
     if (!isObject(raw)) {
       this.error(`Invalid resolutionOrder entry`, { file });
       return undefined;
     }
     if (typeof raw.$ref === "string") {
-      if (!refs) throw new Error(`RefResolver is required to resolve $ref "${raw.$ref}"`);
+      if (!refs) throw new Error(`IResolver is required to resolve $ref "${raw.$ref}"`);
       const [section, ...rest] = parsePointer(raw.$ref.split("#")[1] ?? "");
       if (!raw.type)
         raw.type = section === "sets" ? "set" : section === "modifiers" ? "modifier" : undefined;
@@ -342,19 +340,19 @@ export class TokenDocument {
     this.validateReferences();
   }
 
-  static async fromResolverDocument(file: string, refs: RefResolver): Promise<TokenDocument>;
+  static async fromResolverDocument(file: string, refs: IResolver): Promise<TokenDocument>;
   static async fromResolverDocument(
     resolverDoc: unknown,
     file: string,
-    refs: RefResolver,
+    refs: IResolver,
   ): Promise<TokenDocument>;
   static async fromResolverDocument(
     fileOrDoc: unknown,
-    refsOrFile: string | RefResolver,
-    refsOpt?: RefResolver,
+    refsOrFile: string | IResolver,
+    refsOpt?: IResolver,
   ): Promise<TokenDocument> {
     const file = typeof refsOrFile === "string" ? refsOrFile : (fileOrDoc as string);
-    const refs = refsOpt ?? (refsOrFile as RefResolver);
+    const refs = refsOpt ?? (refsOrFile as IResolver);
     const resolverDoc = typeof refsOrFile === "string" ? fileOrDoc : await refs.readJson(file);
 
     const doc = new TokenDocument(file);

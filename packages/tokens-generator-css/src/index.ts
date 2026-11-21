@@ -9,6 +9,8 @@ import {
 import { propertyRules } from "./property.ts";
 import { kebabCase, toCss, typographyProperties, type VarName } from "./values.ts";
 
+export { kebabCase, toCss, typographyProperties, type VarName } from "./values.ts";
+
 export const PLUGIN_NAME = "@hommel/tokens-generator-css";
 
 export interface CssPluginOptions {

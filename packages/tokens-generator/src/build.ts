@@ -4,6 +4,8 @@ import * as path from "node:path";
 import type { TokenDocument } from "./document.ts";
 import type { Config } from "./types.ts";
 
+export const DEFAULT_CONFIG_FILE = "tokens.config.ts";
+
 export function defineConfig(config: Config): Config {
   return config;
 }

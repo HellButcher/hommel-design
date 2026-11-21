@@ -1,0 +1,38 @@
+.tb-transition-demo {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--tb-space-2xs);
+}
+
+.tb-transition-demo__track {
+  width: 120px;
+  height: 32px;
+  position: relative;
+  background: var(--tb-surface-muted);
+  border-radius: var(--tb-radius-round);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.tb-transition-demo__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: var(--tb-shadow-sm);
+}
+
+.tb-transition-demo__thumb--active {
+  left: 90px;
+}
+
+.tb-transition-demo__label {
+  font-family: var(--tb-font-mono);
+  font-size: var(--tb-type-micro);
+  color: var(--tb-text-muted);
+}

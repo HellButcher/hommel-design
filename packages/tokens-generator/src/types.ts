@@ -1,4 +1,4 @@
-import type { TokenDocument } from "./load.ts";
+import type { TokenDocument } from "./document.ts";
 import type { TypedValue, UntypedValue } from "./token-values.ts";
 import type { ContrastAlgorithm } from "./validate.ts";
 
@@ -105,4 +105,13 @@ export interface Config {
   /** additional checks run by the `check` and `build` commands */
   validation?: ValidationConfig;
   plugins: Plugin[];
+}
+
+export interface IResolver {
+  readJson(file: string): Promise<unknown>;
+  resolve(
+    value: unknown,
+    file: string,
+    diagnostics: TokenDiagnostic[],
+  ): Promise<unknown>;
 }

@@ -1,0 +1,60 @@
+/* shared design primitives for tokenbook's own preview UI (not the inspected design tokens) */
+:root {
+  --tb-space-3xs: 2px;
+  --tb-space-2xs: 4px;
+  --tb-space-xs: 6px;
+  --tb-space-sm: 8px;
+  --tb-space-md: 12px;
+  --tb-space-lg: 16px;
+  --tb-space-xl: 24px;
+
+  --tb-radius-sm: 4px;
+  --tb-radius-md: 8px;
+  --tb-radius-round: 999px;
+
+  --tb-border-default: rgba(0, 0, 0, 0.12);
+  --tb-border-strong: rgba(0, 0, 0, 0.24);
+
+  --tb-surface-default: #fff;
+  --tb-surface-muted: rgba(0, 0, 0, 0.04);
+  --tb-surface-sunken: rgba(0, 0, 0, 0.06);
+
+  --tb-text-default: #1a1a1a;
+  --tb-text-muted: rgba(0, 0, 0, 0.6);
+  --tb-text-subtle: rgba(0, 0, 0, 0.45);
+
+  --tb-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --tb-type-micro: 11px;
+  --tb-type-caption: 12px;
+  --tb-tracking-label: 0.04em;
+
+  --tb-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --tb-shadow-md: 0 2px 10px rgba(0, 0, 0, 0.1);
+
+  --tb-checker-light: rgba(128, 128, 128, 0.18);
+  --tb-accent: #0969da;
+}
+/*
+@media (prefers-color-scheme: dark) {
+  :root {
+    --tb-border-default: rgba(255, 255, 255, 0.16);
+    --tb-border-strong: rgba(255, 255, 255, 0.3);
+
+    --tb-surface-default: #222;
+    --tb-surface-muted: rgba(255, 255, 255, 0.06);
+    --tb-surface-sunken: rgba(255, 255, 255, 0.08);
+
+    --tb-text-default: #f2f2f2;
+    --tb-text-muted: rgba(255, 255, 255, 0.65);
+    --tb-text-subtle: rgba(255, 255, 255, 0.45);
+
+    --tb-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --tb-shadow-md: 0 2px 10px rgba(0, 0, 0, 0.45);
+
+    --tb-checker-light: rgba(255, 255, 255, 0.14);
+    --tb-accent: #4493f8;
+  }
+}
+*/
+
+

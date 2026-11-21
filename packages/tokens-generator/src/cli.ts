@@ -3,7 +3,7 @@ import * as path from "node:path";
 import { pathToFileURL } from "node:url";
 import { parseArgs } from "node:util";
 
-import { build } from "./build.ts";
+import { build, DEFAULT_CONFIG_FILE } from "./build.ts";
 import { loadTokenDocument } from "./load.ts";
 import type { Config, DiagnosticSource, TokenDiagnostic } from "./types.ts";
 import { checkDocument } from "./validate.ts";
@@ -43,7 +43,7 @@ async function main(args: string[]) {
     args,
     allowPositionals: true,
     options: {
-      config: { type: "string", short: "c", default: "tokens.config.ts" },
+      config: { type: "string", short: "c", default: DEFAULT_CONFIG_FILE },
       help: { type: "boolean", short: "h" },
     },
   });

@@ -1,0 +1,46 @@
+{
+  "name": "hommel-design-storybook",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "author": {
+    "name": "Christoph Hommelsheim",
+    "url": "https://hommel.dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HellButcher/hommel-design"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "storybook build",
+    "build-storybook": "storybook build",
+    "test": "vitest",
+    "storybook": "storybook dev -p 6006"
+  },
+  "dependencies": {
+    "@hommel/design-tokens": "workspace:",
+    "@solidjs/web": "^2.0.0",
+    "solid-js": "^2.0.0"
+  },
+  "devDependencies": {
+    "@hommel/tokens-storybook": "workspace:",
+    "@solidjs/testing-library": "^0.8.10",
+    "@solidjs/vite-plugin": "^3.0.0",
+    "@storybook/addon-a11y": "11.0.0-beta.3",
+    "@storybook/addon-docs": "11.0.0-beta.3",
+    "@storybook/addon-vitest": "11.0.0-beta.3",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@types/node": "~22.18.13",
+    "@vitest/browser-playwright": "latest",
+    "@vitest/coverage-v8": "latest",
+    "jsdom": "^31.0.1",
+    "playwright": "latest",
+    "storybook": "11.0.0-beta.3",
+    "storybook-solidjs-vite": "next",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.0"
+  }
+}

@@ -1,0 +1,24 @@
+.tb-border-sample {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--tb-space-2xs);
+  max-width: 100%;
+}
+
+.tb-border-sample__preview {
+  width: 64px;
+  height: 48px;
+  border-radius: var(--tb-radius-md);
+  background: var(--tb-surface-muted);
+}
+
+.tb-border-sample__label {
+  font-family: var(--tb-font-mono);
+  font-size: var(--tb-type-micro);
+  color: var(--tb-text-muted);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
