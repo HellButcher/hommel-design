@@ -2,6 +2,19 @@ import { defineMain } from "storybook-solidjs-vite";
 
 export default defineMain({
   stories: ["../stories/**/*.mdx", "../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+  storySorts: [
+    {
+      order: [
+        'Intro',
+        ['Intro', 'Getting Started'],
+        'Foundation',
+        'Components',
+        'Utilities',
+        'Patterns'
+      ]
+    },
+    { method: 'alphabetical' },
+  ],
   addons: [
     "@storybook/addon-vitest",
     "@storybook/addon-a11y",
