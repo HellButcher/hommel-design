@@ -1,0 +1,8 @@
+@import "@hommel/design-tokens";
+
+:root {
+  background-color: var(--h-color-background-default);
+  color: var(--h-color-text-primary);
+  
+  font-family: "Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}

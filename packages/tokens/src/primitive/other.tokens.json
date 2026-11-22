@@ -3,8 +3,9 @@
   "font": {
     "family": {
       "$type": "fontFamily",
-      "source-sans": { "$value": ["Source Sans 3", "sans-serif"] },
-      "source-code": { "$value": ["Source Code Pro", "monospace"] }
+      "sans": { "$value": ["Nunito Sans", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"] },
+      "source-sans": { "$value": ["Source Sans 3", "Helvetica", "Arial", "sans-serif"] },
+      "source-code": { "$value": ["Fira Code", "Source Code Pro", "Consolas", "monospace"] }
     },
     "weight": {
       "$type": "fontWeight",

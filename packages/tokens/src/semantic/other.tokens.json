@@ -24,7 +24,7 @@
     "$type": "typography",
     "body": {
       "$value": {
-        "fontFamily": "{font.family.source-sans}",
+        "fontFamily": "{font.family.sans}",
         "fontSize": "{font.size.200}",
         "fontWeight": "{font.weight.400}",
         "letterSpacing": "{font.letter-spacing.0}",
@@ -33,7 +33,7 @@
     },
     "caption": {
       "$value": {
-        "fontFamily": "{font.family.source-sans}",
+        "fontFamily": "{font.family.sans}",
         "fontSize": "{font.size.100}",
         "fontWeight": "{font.weight.400}",
         "letterSpacing": "{font.letter-spacing.0}",
@@ -42,7 +42,7 @@
     },
     "label": {
       "$value": {
-        "fontFamily": "{font.family.source-sans}",
+        "fontFamily": "{font.family.sans}",
         "fontSize": "{font.size.200}",
         "fontWeight": "{font.weight.600}",
         "letterSpacing": "{font.letter-spacing.0}",
@@ -51,7 +51,7 @@
     },
     "heading": {
       "$value": {
-        "fontFamily": "{font.family.source-sans}",
+        "fontFamily": "{font.family.sans}",
         "fontSize": "{font.size.400}",
         "fontWeight": "{font.weight.700}",
         "letterSpacing": "{font.letter-spacing.0}",
@@ -60,7 +60,7 @@
     },
     "display": {
       "$value": {
-        "fontFamily": "{font.family.source-sans}",
+        "fontFamily": "{font.family.sans}",
         "fontSize": "{font.size.500}",
         "fontWeight": "{font.weight.700}",
         "letterSpacing": "{font.letter-spacing.0}",

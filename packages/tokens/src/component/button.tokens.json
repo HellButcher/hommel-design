@@ -1,6 +1,16 @@
 {
   "$schema": "https://www.designtokens.org/schemas/2025.10/format.json",
   "button": {
+    "border-radius": { "$value": "{radius.control}" },
+    "padding-x": { "$value": "{space.control.padding-x}" },
+    "padding-y": { "$value": "{space.control.padding-y}" },
+    "gap": { "$value": "{space.control.gap}" },
+    "min-height": { "$value": "{space.control.min-height}" },
+    "typography": { "$value": "{typography.label}" },
+    "focus-width": { "$value": "{border.width.focus}" },
+    "focus-offset": { "$value": "{border.focus-offset}" },
+    "duration": { "$value": "{motion.duration.interaction}" },
+    "easing": { "$value": "{motion.easing.interaction}" },
     "primary": {
       "background": {
         "$root": { "$value": "{color.action.primary.$root}" },
@@ -12,19 +22,28 @@
         "$root": { "$value": "{color.action.primary.text}" },
         "disabled": { "$value": "{color.disabled.text}" }
       },
-      "border-radius": { "$value": "{radius.control}" },
-      "border-width": { "$value": "{border.width.control}" },
-      "border-color": { "$value": "{color.border.control}" },
-      "padding-x": { "$value": "{space.control.padding-x}" },
-      "padding-y": { "$value": "{space.control.padding-y}" },
-      "gap": { "$value": "{space.control.gap}" },
-      "min-height": { "$value": "{space.control.min-height}" },
-      "typography": { "$value": "{typography.label}" },
-      "focus-color": { "$value": "{color.focus}" },
-      "focus-width": { "$value": "{border.width.focus}" },
-      "focus-offset": { "$value": "{border.focus-offset}" },
-      "duration": { "$value": "{motion.duration.interaction}" },
-      "easing": { "$value": "{motion.easing.interaction}" }
+      "border": {
+        "$type": "border",
+        "$value": {
+          "width": "{border.width.control}",
+          "style": "solid",
+          "color": "{color.border.control}"
+        }
+      },
+      "focus-color": { "$value": "{color.focus}" }
+    },
+    "secondary": {
+      "$extends": "{button.primary}",
+      "background": {
+        "$root": { "$value": "{color.action.secondary.$root}" },
+        "hover": { "$value": "{color.action.secondary.hover}" },
+        "active": { "$value": "{color.action.secondary.active}" },
+        "disabled": { "$value": "{color.disabled.background}" }
+      },
+      "text": {
+        "$root": { "$value": "{color.action.secondary.text}" },
+        "disabled": { "$value": "{color.disabled.text}" }
+      }
     }
   }
 }

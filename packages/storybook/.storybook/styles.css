@@ -1,0 +1,6 @@
+.docs-story {
+  /* emulate page body */
+  background-color: var(--h-color-background-default);
+  color: var(--h-color-text-default);
+  font-family: var(--h-font-family-sans);
+}
