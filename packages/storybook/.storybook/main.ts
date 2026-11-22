@@ -1,6 +1,6 @@
-import type { StorybookConfig } from "storybook-solidjs-vite";
+import { defineMain } from "storybook-solidjs-vite";
 
-const config: StorybookConfig = {
+export default defineMain({
   stories: ["../stories/**/*.mdx", "../stories/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
   addons: [
     "@storybook/addon-vitest",
@@ -14,8 +14,10 @@ const config: StorybookConfig = {
     },
   ],
   framework: "storybook-solidjs-vite",
+  features: {
+    sidebarOnboardingChecklist: false,
+  },
   core: {
     disableTelemetry: true,
   },
-};
-export default config;
+});

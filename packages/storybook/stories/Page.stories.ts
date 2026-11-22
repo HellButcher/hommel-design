@@ -1,24 +1,21 @@
-import type { Meta, StoryObj } from "storybook-solidjs-vite";
+import preview from '../.storybook/preview';
 import { expect, userEvent, within } from "storybook/test";
 
 import { Page } from "./Page";
 
-const meta = {
+const meta = preview.meta({
   title: "Example/Page",
   component: Page,
   parameters: {
     // More on how to position stories at: https://storybook.js.org/docs/configure/story-layout
     layout: "fullscreen",
   },
-} satisfies Meta<typeof Page>;
+});
 
-export default meta;
-type Story = StoryObj<typeof meta>;
-
-export const LoggedOut: Story = {};
+export const LoggedOut = meta.story({});
 
 // More on component testing: https://storybook.js.org/docs/writing-tests/interaction-testing
-export const LoggedIn: Story = {
+export const LoggedIn = meta.story({
   play: async ({ canvasElement }: { canvasElement: HTMLElement }) => {
     const canvas = within(canvasElement);
     const loginButton = canvas.getByRole("button", { name: /Log in/i });
@@ -31,4 +28,4 @@ export const LoggedIn: Story = {
 
     await expect(logoutButton).toBeInTheDocument();
   },
-};
+});
