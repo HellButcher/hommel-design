@@ -1,27 +1,34 @@
-import React from 'react';
+import React from "react";
 import { useState, type CSSProperties } from "react";
+
 import { useTokenCss, useTokenRef, type TokenRefProps } from "../context.tsx";
+import { TokenValue } from "./TokenValue.tsx";
+
 import "./Transition.css";
 
-export type TransitionDemoProps = TokenRefProps & {
+export type TransitionSampleProps = TokenRefProps & {
   style?: CSSProperties;
 };
 
 /** a box that moves between two positions using the resolved transition, toggled on click */
-export function TransitionDemo(props: TransitionDemoProps) {
+export function TransitionSample(props: TransitionSampleProps) {
   const { style, ...ref } = props;
   const token = useTokenRef(ref);
   const transition = useTokenCss(token);
   const [active, setActive] = useState(false);
   return (
-    <div className="tb-transition-demo" style={style}>
-      <button type="button" className="tb-transition-demo__track" onClick={() => setActive((v) => !v)}>
+    <div className="tb-transition-sample tb-sample-row" style={style}>
+      <button
+        type="button"
+        className="tb-transition-sample__track"
+        onClick={() => setActive((v) => !v)}
+      >
         <div
-          className={`tb-transition-demo__thumb${active ? " tb-transition-demo__thumb--active" : ""}`}
+          className={`tb-transition-sample__thumb${active ? " tb-transition-sample__thumb--active" : ""}`}
           style={{ transition: `all ${transition}` }}
         />
       </button>
-      <code className="tb-transition-demo__label">{token.id}</code>
+      <TokenValue token={token} value={transition} />
     </div>
   );
 }

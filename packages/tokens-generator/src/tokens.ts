@@ -23,7 +23,7 @@ const META_KEYS = new Set([
 /** follows the alias chain of `id` and returns the final (non-alias) token */
 export function resolveToken(idOrToken: string | Token, tokens: TokenMap | TokenMap[]): Token {
   let id: string;
-  if (typeof idOrToken !== 'string') {
+  if (typeof idOrToken !== "string") {
     if (!idOrToken.aliasOf) return idOrToken;
     id = idOrToken.aliasOf;
   } else {

@@ -1,6 +1,9 @@
-import React from 'react';
+import React from "react";
 import type { CSSProperties } from "react";
+
 import { useTokenCss, useTokenRef, type TokenRefProps } from "../context.tsx";
+import { TokenValue } from "./TokenValue.tsx";
+
 import "./Shadow.css";
 
 export type ShadowSampleProps = TokenRefProps & {
@@ -13,11 +16,11 @@ export function ShadowSample(props: ShadowSampleProps) {
   const token = useTokenRef(ref);
   const boxShadow = useTokenCss(token);
   return (
-    <div className="tb-shadow-sample" style={style}>
+    <div className="tb-shadow-sample tb-sample-row" style={style}>
       <div className="tb-shadow-sample__stage">
         <div className="tb-shadow-sample__preview" style={{ boxShadow }} />
       </div>
-      <code className="tb-shadow-sample__label">{token.id}</code>
+      <TokenValue token={token} value={boxShadow} />
     </div>
   );
 }

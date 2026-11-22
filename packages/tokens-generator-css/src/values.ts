@@ -9,7 +9,8 @@ import {
   type ValueOrAlias,
 } from "@hommel/tokens-generator";
 
-export type VarName = (id: string) => string;
+export type VarNameMapper = (id: string) => string;
+export type VarAliasMapper = (id: string) => string;
 
 const FONT_WEIGHTS: Readonly<Record<FontWeightKeyword, number>> = {
   thin: 100,
@@ -63,12 +64,12 @@ function fontFamily(name: string): string {
 }
 
 /** converts a token value to a CSS value; aliases become `var()` references */
-export function toCss(v: TypedValue | UntypedValue, varName: VarName): string {
+export function toCss(v: TypedValue | UntypedValue, varRef: VarAliasMapper): string {
   const ref = <T>(value: ValueOrAlias<T>, fn: (value: T) => string): string => {
     const alias = parseAlias(value);
-    return alias ? `var(${varName(alias)})` : fn(value as T);
+    return alias ? varRef(alias) : fn(value as T);
   };
-  const css = (sub: TypedValue) => toCss(sub, varName);
+  const css = (sub: TypedValue) => toCss(sub, varRef);
 
   switch (v.type) {
     case "color":
@@ -143,7 +144,7 @@ export function toCss(v: TypedValue | UntypedValue, varName: VarName): string {
       );
     case "typography":
       return ref(v.value, (t) => {
-        const props = typographyProperties(t, varName);
+        const props = typographyProperties(t, varRef);
         return `${props.fontWeight} ${props.fontSize}/${props.lineHeight} ${props.fontFamily}`;
       });
     case undefined:
@@ -157,21 +158,21 @@ export function toCss(v: TypedValue | UntypedValue, varName: VarName): string {
 /** CSS values of the typography properties */
 export function typographyProperties(
   value: ValueOrAlias<TypographyValue>,
-  varName: VarName,
+  varRef: VarAliasMapper,
 ): Record<keyof TypographyValue, string> {
   if (typeof value === "string") {
     const alias = parseAlias(value);
     if (!alias) throw new Error(`Invalid alias: ${value}`);
-    const subVarName = (key: keyof TypographyValue) => varName(`${alias}.${key}`);
+    const subVarRef = (key: keyof TypographyValue) => varRef(`${alias}.${key}`);
     return {
-      fontFamily: `var(${subVarName("fontFamily")})`,
-      fontSize: `var(${subVarName("fontSize")})`,
-      fontWeight: `var(${subVarName("fontWeight")})`,
-      letterSpacing: `var(${subVarName("letterSpacing")})`,
-      lineHeight: `var(${subVarName("lineHeight")})`,
+      fontFamily: subVarRef("fontFamily"),
+      fontSize: subVarRef("fontSize"),
+      fontWeight: subVarRef("fontWeight"),
+      letterSpacing: subVarRef("letterSpacing"),
+      lineHeight: subVarRef("lineHeight"),
     };
   } else {
-    const css = (sub: TypedValue) => toCss(sub, varName);
+    const css = (sub: TypedValue) => toCss(sub, varRef);
     return {
       fontFamily: css({ type: "fontFamily", value: value.fontFamily }),
       fontSize: css({ type: "dimension", value: value.fontSize }),

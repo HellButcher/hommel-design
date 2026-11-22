@@ -1,0 +1,10 @@
+.tb-cubic-bezier-sample__preview {
+  border: var(--tb-border-block);
+  border-radius: var(--tb-radius-block);
+  box-shadow: var(--tb-shadow-block);
+  background-color: var(--tb-surface-default);
+}
+
+.tb-cubic-bezier-sample__curve path {
+  stroke: var(--tb-ink-default);
+}

@@ -1,8 +1,8 @@
+import addonTokensStorybook from "@hommel/tokens-storybook";
+import { TokensDocsContainer } from "@hommel/tokens-storybook/blocks";
+import addonDocs from "@storybook/addon-docs";
 import { definePreview } from "storybook-solidjs-vite";
-import addonDocs from '@storybook/addon-docs';
-import addonTokensStorybook from '@hommel/tokens-storybook';
-import { TokensDocsContainer } from '@hommel/tokens-storybook/blocks';
-import { themes } from 'storybook/theming';
+import { themes } from "storybook/theming";
 
 export default definePreview({
   addons: [addonDocs(), addonTokensStorybook()],

@@ -1,41 +1,22 @@
-.tb-color-swatch {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--tb-space-2xs);
-  max-width: 100%;
-}
-
-.tb-color-swatch__preview {
-  border-radius: var(--tb-radius-sm);
-  border: 1px solid var(--tb-border-default);
-  box-shadow: var(--tb-shadow-sm);
-  background-color: var(--tb-surface-default);
-  background-image:
-    linear-gradient(45deg, var(--tb-checker-light) 25%, transparent 25%),
-    linear-gradient(-45deg, var(--tb-checker-light) 25%, transparent 25%),
-    linear-gradient(45deg, transparent 75%, var(--tb-checker-light) 75%),
-    linear-gradient(-45deg, transparent 75%, var(--tb-checker-light) 75%);
-  background-size: 8px 8px;
-  background-position:
-    0 0,
-    0 4px,
-    4px -4px,
-    -4px 0;
-}
-
-.tb-color-swatch__fill {
-  width: 100%;
-  height: 100%;
-  border-radius: inherit;
-}
-
-.tb-color-swatch__label {
-  font-family: var(--tb-font-mono);
-  font-size: var(--tb-type-micro);
-  color: var(--tb-text-muted);
-  max-width: 100%;
+.tb-color-sample__preview {
+  position: relative;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  border: var(--tb-border-block);
+  border-radius: var(--tb-radius-block);
+  box-shadow: var(--tb-shadow-block);
+  background-color: var(--tb-surface-default);
+}
+
+.tb-color-sample__fill {
+  position: absolute;
+  inset: 0;
+}
+
+/* the opaque half (alpha forced to 1) sits on the left, the true alpha half (over the checkerboard) on the right */
+.tb-color-sample__fill--opaque {
+  right: 50%;
+}
+
+.tb-color-sample__fill--alpha {
+  left: 50%;
 }

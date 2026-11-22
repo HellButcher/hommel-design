@@ -109,9 +109,5 @@ export interface Config {
 
 export interface IResolver {
   readJson(file: string): Promise<unknown>;
-  resolve(
-    value: unknown,
-    file: string,
-    diagnostics: TokenDiagnostic[],
-  ): Promise<unknown>;
+  resolve(value: unknown, file: string, diagnostics: TokenDiagnostic[]): Promise<unknown>;
 }

@@ -6,17 +6,5 @@
 
 .tb-stroke-style-sample__preview {
   width: 72px;
-  border-top-width: 2px;
-  border-top-color: var(--tb-text-default);
-}
-
-.tb-stroke-style-sample__label {
-  font-family: var(--tb-font-mono);
-  font-size: var(--tb-type-micro);
-  color: var(--tb-text-muted);
-  white-space: nowrap;
-}
-
-.tb-stroke-style-sample__value {
-  color: var(--tb-text-default);
+  border-top: 2px solid var(--tb-ink-default);
 }

@@ -1,0 +1,20 @@
+.tb-token-value {
+  display: flex;
+  flex-direction: column;
+  gap: var(--tb-space-3xs);
+  max-width: 100%;
+}
+
+.tb-token-value__raw {
+  font-family: var(--tb-font-mono);
+  font-size: var(--tb-type-caption);
+  color: var(--tb-ink-default);
+  overflow-wrap: break-word;
+}
+
+.tb-token-value__alias {
+  font-family: var(--tb-font-mono);
+  font-size: var(--tb-type-micro);
+  color: var(--tb-ink-subtle);
+  overflow-wrap: break-word;
+}

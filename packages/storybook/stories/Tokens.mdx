@@ -1,5 +1,10 @@
 import { Meta, Typeset, ColorPalette, ColorItem } from "@storybook/addon-docs/blocks";
-import { ColorSwatch, DimensionSample, TypeSample, TokenGrid } from "@hommel/tokens-storybook/blocks";
+import {
+  ColorSample,
+  DimensionSample,
+  TypographySample,
+  TokenPalette,
+} from "@hommel/tokens-storybook/blocks";
 
 <Meta title="Design Tokens" />
 
@@ -8,10 +13,10 @@ import { ColorSwatch, DimensionSample, TypeSample, TokenGrid } from "@hommel/tok
 ## Colors
 
 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-  <ColorSwatch token="color.teal.500" />
-  <ColorSwatch token="color.coral.500" />
-  <ColorSwatch token="color.gray.700" />
-  <ColorSwatch token="button.primary.background.$root" />
+  <ColorSample token="color.teal.500" />
+  <ColorSample token="color.coral.500" />
+  <ColorSample token="color.gray.700" />
+  <ColorSample token="button.primary.background.$root" />
 </div>
 
 ## Spacing
@@ -20,92 +25,8 @@ import { ColorSwatch, DimensionSample, TypeSample, TokenGrid } from "@hommel/tok
 
 ## Typography
 
-<TypeSample token="typography.label" />
-
-## Storybook default components
-
-<ColorPalette>
-  <ColorItem
-    title="theme.color.greyscale"
-    subtitle="Some of the greys"
-    colors={{ White: '#FFFFFF', Alabaster: '#F8F8F8', Concrete: '#F3F3F3' }}
-  />
-  <ColorItem
-    title="theme.color.primary"
-    subtitle="Coral"
-    colors={{ WildWatermelon: '#FF4785' }}
-  />
-  <ColorItem
-    title="theme.color.secondary"
-    subtitle="Ocean"
-    colors={{ DodgerBlue: '#1EA7FD' }}
-  />
-  <ColorItem
-    title="theme.color.positive"
-    subtitle="Green"
-    colors={{
-      Apple: 'rgba(102,191,60,1)',
-      Apple80: 'rgba(102,191,60,.8)',
-      Apple60: 'rgba(102,191,60,.6)',
-      Apple30: 'rgba(102,191,60,.3)',
-    }}
-  />
-  <ColorItem
-    title="gradient"
-    subtitle="Grayscale"
-    colors={{
-      Gradient: 'linear-gradient(to right,white,black)',
-    }}
-  />
-  <ColorItem
-    title="gradient"
-    subtitle="Grayscale"
-    colors={['linear-gradient(65deg,white,black)']}
-  />
-</ColorPalette>
-
-export const SampleText = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.';
-export const typography = {
-  type: {
-    primary: '"Nunito Sans", "Helvetica Neue", Helvetica, Arial, sans-serif',
-  },
-  weight: {
-    regular: '400',
-    bold: '700',
-    extrabold: '800',
-    black: '900',
-  },
-  size: {
-    s1: 12,
-    s2: 14,
-    s3: 16,
-    m1: 20,
-    m2: 24,
-    m3: 28,
-    l1: 32,
-    l2: 40,
-    l3: 48,
-  },
-};
-
-<Typeset
-  fontSizes={[
-    Number(typography.size.s1),
-    Number(typography.size.s2),
-    Number(typography.size.s3),
-    Number(typography.size.m1),
-    Number(typography.size.m2),
-    Number(typography.size.m3),
-    Number(typography.size.l1),
-    Number(typography.size.l2),
-    Number(typography.size.l3),
-  ]}
-  fontWeight={typography.weight.black}
-  sampleText={SampleText}
-  fontFamily={typography.type.primary}
-/>
+<TypographySample token="typography.label" />
 
 ## All foundation tokens
 
-<TokenGrid/>
-
+<TokenPalette />

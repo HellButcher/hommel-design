@@ -1,6 +1,6 @@
 import type { Token, TokenType, TypographyValue } from "@hommel/tokens-generator";
 
-import { toCss, typographyProperties, type VarName } from "./values.ts";
+import { toCss, typographyProperties, type VarAliasMapper, type VarNameMapper } from "./values.ts";
 
 export type BaseSyntaxType =
   | "*"
@@ -55,13 +55,17 @@ function propertyRule(name: string, syntax: string, initialValue: string): strin
 }
 
 /** `@property` rules registering the custom properties of a (non-alias) token */
-export function propertyRules(token: Token, varName: VarName): string[] {
+export function propertyRules(
+  token: Token,
+  varName: VarNameMapper,
+  varAlias: VarAliasMapper,
+): string[] {
   const syntax = propertySyntax(token);
   if (!syntax || syntax === "*") return [];
   if (typeof syntax === "string")
-    return propertyRule(varName(token.id), syntax, toCss(token, varName));
+    return propertyRule(varName(token.id), syntax, toCss(token, varAlias));
   if (token.type === "typography" && typeof token.value !== "string") {
-    const props = typographyProperties(token.value, varName);
+    const props = typographyProperties(token.value, varAlias);
     return Object.entries(syntax)
       .filter(([, subtype]) => subtype && subtype !== "*")
       .flatMap(([key, subSyntax]) =>

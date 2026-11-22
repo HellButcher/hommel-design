@@ -1,25 +1,14 @@
-.tb-gradient-swatch {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--tb-space-2xs);
-  max-width: 100%;
-}
-
-.tb-gradient-swatch__preview {
+.tb-gradient-sample__preview {
+  position: relative;
   width: 112px;
   height: 48px;
-  border-radius: var(--tb-radius-md);
-  border: 1px solid var(--tb-border-default);
-  box-shadow: var(--tb-shadow-sm);
+  border: var(--tb-border-block);
+  border-radius: var(--tb-radius-block);
+  box-shadow: var(--tb-shadow-block);
+  background: var(--tb-surface-default);
 }
 
-.tb-gradient-swatch__label {
-  font-family: var(--tb-font-mono);
-  font-size: var(--tb-type-micro);
-  color: var(--tb-text-muted);
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.tb-gradient-sample__gradient {
+  position: absolute;
+  inset: 0;
 }

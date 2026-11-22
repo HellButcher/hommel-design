@@ -1,0 +1,14 @@
+.tb-spacing-sample__track {
+  display: flex;
+  align-items: center;
+  padding: var(--tb-space-xs);
+  border-radius: var(--tb-radius-block);
+  background: var(--tb-surface-sunken);
+}
+
+.tb-spacing-sample__block {
+  width: 16px;
+  height: 28px;
+  border-radius: var(--tb-radius-block);
+  background: var(--tb-ink-default);
+}

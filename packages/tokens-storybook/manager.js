@@ -1,1 +1,1 @@
-export * from './dist/manager.mjs';
+export * from "./dist/manager.mjs";

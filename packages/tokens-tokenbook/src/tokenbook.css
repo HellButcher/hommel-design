@@ -8,28 +8,25 @@
   --tb-space-lg: 16px;
   --tb-space-xl: 24px;
 
-  --tb-radius-sm: 4px;
-  --tb-radius-md: 8px;
+  --tb-radius-block: 4px;
   --tb-radius-round: 999px;
 
-  --tb-border-default: rgba(0, 0, 0, 0.12);
-  --tb-border-strong: rgba(0, 0, 0, 0.24);
+  --tb-border-block: 1px solid rgba(0, 0, 0, 0.12);
 
   --tb-surface-default: #fff;
   --tb-surface-muted: rgba(0, 0, 0, 0.04);
   --tb-surface-sunken: rgba(0, 0, 0, 0.06);
 
-  --tb-text-default: #1a1a1a;
-  --tb-text-muted: rgba(0, 0, 0, 0.6);
-  --tb-text-subtle: rgba(0, 0, 0, 0.45);
+  --tb-ink-default: #1a1a1a;
+  --tb-ink-muted: rgba(0, 0, 0, 0.6);
+  --tb-ink-subtle: rgba(0, 0, 0, 0.45);
 
   --tb-font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --tb-type-micro: 11px;
   --tb-type-caption: 12px;
   --tb-tracking-label: 0.04em;
 
-  --tb-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
-  --tb-shadow-md: 0 2px 10px rgba(0, 0, 0, 0.1);
+  --tb-shadow-block: rgba(0, 0, 0, 0.1) 0 1px 3px 0;
 
   --tb-checker-light: rgba(128, 128, 128, 0.18);
   --tb-accent: #0969da;
@@ -37,19 +34,17 @@
 /*
 @media (prefers-color-scheme: dark) {
   :root {
-    --tb-border-default: rgba(255, 255, 255, 0.16);
-    --tb-border-strong: rgba(255, 255, 255, 0.3);
+    --tb-border-block: 1px solid rgba(255, 255, 255, 0.16);
 
     --tb-surface-default: #222;
     --tb-surface-muted: rgba(255, 255, 255, 0.06);
     --tb-surface-sunken: rgba(255, 255, 255, 0.08);
 
-    --tb-text-default: #f2f2f2;
-    --tb-text-muted: rgba(255, 255, 255, 0.65);
-    --tb-text-subtle: rgba(255, 255, 255, 0.45);
+    --tb-ink-default: #f2f2f2;
+    --tb-ink-muted: rgba(255, 255, 255, 0.65);
+    --tb-ink-subtle: rgba(255, 255, 255, 0.45);
 
-    --tb-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --tb-shadow-md: 0 2px 10px rgba(0, 0, 0, 0.45);
+    --tb-shadow-block: rgba(0, 0, 0, 0.2) 0 2px 5px 0;
 
     --tb-checker-light: rgba(255, 255, 255, 0.14);
     --tb-accent: #4493f8;
@@ -57,4 +52,35 @@
 }
 */
 
+/* uniform layout for every token sample: a representation beside its resolved value */
+.tb-sample-row,
+.tb-sample-row-vert {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--tb-space-md);
+  max-width: 100%;
+}
 
+.tb-sample-row-vert {
+  width: 100%;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.tb-sample-checkerboard {
+  width: 100%;
+  height: 100%;
+  background-color: var(--tb-surface-default);
+  background-image:
+    linear-gradient(45deg, var(--tb-ink-default) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--tb-ink-default) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--tb-ink-default) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--tb-ink-default) 75%);
+  background-size: 8px 8px;
+  background-position:
+    0 0,
+    0 4px,
+    4px -4px,
+    -4px 0;
+}

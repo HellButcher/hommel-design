@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.react.json",
   "compilerOptions": {
     "customConditions": ["node"],
-    "types": ["node", "./src/virtual.d.ts"],
+    "types": ["node", "./src/virtual.d.ts"]
   },
   "include": ["./src/**/*.ts", "./src/**/*.tsx"]
 }

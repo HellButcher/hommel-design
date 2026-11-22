@@ -11,6 +11,6 @@
     "types": ["node"],
     // and npm install -D @types/node
 
-    "erasableSyntaxOnly": true,
-  },
+    "erasableSyntaxOnly": true
+  }
 }

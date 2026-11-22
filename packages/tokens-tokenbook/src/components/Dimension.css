@@ -8,25 +8,15 @@
   flex: 1 1 auto;
   min-width: 24px;
   height: 14px;
-  background: var(--tb-surface-muted);
-  border-radius: var(--tb-radius-sm);
+  border: var(--tb-border-block);
+  border-radius: var(--tb-radius-block);
+  box-shadow: var(--tb-shadow-block);
+  background: var(--tb-surface-default);
   overflow: hidden;
 }
 
 .tb-dimension-sample__bar {
   height: 100%;
-  border-radius: inherit;
-  background: currentColor;
-}
-
-.tb-dimension-sample__label {
-  flex: 0 0 auto;
-  font-family: var(--tb-font-mono);
-  font-size: var(--tb-type-micro);
-  color: var(--tb-text-muted);
-  white-space: nowrap;
-}
-
-.tb-dimension-sample__value {
-  color: var(--tb-text-default);
+  border-radius: var(--tb-radius-block);
+  background: var(--tb-ink-default);
 }

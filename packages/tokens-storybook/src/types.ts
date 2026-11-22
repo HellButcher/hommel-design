@@ -6,7 +6,7 @@ export interface TokensAddonState {
 }
 
 export interface TokensGlobals {
-  [modifier: string]: string,
+  [modifier: string]: string;
 }
 
 export interface TokensTypes {

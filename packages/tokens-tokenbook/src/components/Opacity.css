@@ -1,0 +1,26 @@
+.tb-opacity-sample__preview {
+  position: relative;
+  border: var(--tb-border-block);
+  box-shadow: var(--tb-shadow-block);
+  border-radius: var(--tb-radius-block);
+  background-color: var(--tb-surface-default);
+  overflow: hidden;
+}
+
+.tb-opacity-sample__fill,
+.tb-opacity-sample__fill-white,
+.tb-opacity-sample__fill-black {
+  position: absolute;
+  inset: 0;
+  background: var(--tb-ink-default);
+}
+
+.tb-opacity-sample__fill-white {
+  left: 50%;
+  background: white;
+}
+
+.tb-opacity-sample__fill-black {
+  right: 50%;
+  background: black;
+}

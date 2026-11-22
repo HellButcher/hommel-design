@@ -1,15 +1,22 @@
-import React from 'react';
 import type { Token } from "@hommel/tokens-generator";
+import React from "react";
+
 import { useTokenMap, useTokenRef, type TokenRefProps } from "../context.tsx";
-import { ColorSwatch } from "./Color.tsx";
-import { DimensionSample } from "./Dimension.tsx";
 import { BorderSample } from "./Border.tsx";
-import { StrokeStyleSample } from "./StrokeStyle.tsx";
+import { BorderRadiusSample } from "./BorderRadius.tsx";
+import { ColorSample } from "./Color.tsx";
+import { CubicBezierSample } from "./CubicBezier.tsx";
+import { DimensionSample } from "./Dimension.tsx";
+import { GradientSample } from "./Gradient.tsx";
+import { OpacitySample } from "./Opacity.tsx";
+import { PrimitiveSample } from "./Primitive.tsx";
 import { ShadowSample } from "./Shadow.tsx";
-import { GradientSwatch } from "./Gradient.tsx";
-import { TransitionDemo } from "./Transition.tsx";
-import { TypeSample } from "./Typography.tsx";
-import { CubicBezierSample, FontFamilySample, FontWeightSample, PrimitiveSample } from "./Primitive.tsx";
+import { SpacingSample } from "./Spacing.tsx";
+import { StrokeStyleSample } from "./StrokeStyle.tsx";
+import { TokenMeta } from "./TokenMeta.tsx";
+import { TransitionSample } from "./Transition.tsx";
+import { FontFamilySample, FontWeightSample, TypographySample } from "./Typography.tsx";
+
 import "./Token.css";
 
 export type TokenPreviewProps = TokenRefProps;
@@ -19,9 +26,29 @@ export function TokenPreview(props: TokenPreviewProps) {
   const token = useTokenRef(props);
   switch (token.type) {
     case "color":
-      return <ColorSwatch token={token} />;
-    case "dimension":
-      return <DimensionSample token={token} />;
+      return <ColorSample token={token} />;
+    case "dimension": {
+      switch (token.extensions?.subtype) {
+        case "radius":
+          return <BorderRadiusSample token={token} />;
+        case "spacing":
+        case "gap":
+          return <SpacingSample token={token} />;
+      }
+      const idLower = token.id.toLowerCase();
+      if (idLower.includes("radius")) {
+        return <BorderRadiusSample token={token} />;
+      } else if (
+        idLower.includes("spacing") ||
+        idLower.includes("padding") ||
+        idLower.includes("margin") ||
+        idLower.includes("gap")
+      ) {
+        return <SpacingSample token={token} />;
+      } else {
+        return <DimensionSample token={token} />;
+      }
+    }
     case "border":
       return <BorderSample token={token} />;
     case "strokeStyle":
@@ -29,17 +56,27 @@ export function TokenPreview(props: TokenPreviewProps) {
     case "shadow":
       return <ShadowSample token={token} />;
     case "gradient":
-      return <GradientSwatch token={token} />;
+      return <GradientSample token={token} />;
     case "transition":
-      return <TransitionDemo token={token} />;
+      return <TransitionSample token={token} />;
     case "typography":
-      return <TypeSample token={token} />;
+      return <TypographySample token={token} />;
     case "fontFamily":
       return <FontFamilySample token={token} />;
     case "fontWeight":
       return <FontWeightSample token={token} />;
     case "cubicBezier":
       return <CubicBezierSample token={token} />;
+    case "number":
+      const idLower = token.id.toLowerCase();
+      if (
+        token.extensions?.subtype === "opacity" ||
+        idLower.includes("opacity") ||
+        idLower.includes("alpha")
+      ) {
+        return <OpacitySample token={token} />;
+      }
+      return <PrimitiveSample token={token} />;
     default:
       return <PrimitiveSample token={token} />;
   }
@@ -47,37 +84,33 @@ export function TokenPreview(props: TokenPreviewProps) {
 
 export type TokenRowProps = TokenRefProps;
 
-/** a token's metadata (id, description, deprecation) alongside its preview */
+/** a row of a `TokenPalette`: the token's `TokenMeta` (name column) alongside its `TokenPreview` (sample column) */
 export function TokenRow(props: TokenRowProps) {
   const token = useTokenRef(props);
   return (
     <div className="tb-token-row">
-      <div className="tb-token-row__preview">
-        <TokenPreview token={token} />
+      <div className="tb-token-row__name">
+        <TokenMeta token={token} />
       </div>
-      <div className="tb-token-row__meta">
-        <div className={`tb-token-row__id${token.deprecated ? " tb-token-row__id--deprecated" : ""}`}>
-          {token.id}
-          {token.deprecated ? " (deprecated)" : ""}
-        </div>
-        {token.description && <div className="tb-token-row__description">{token.description}</div>}
+      <div className="tb-token-row__sample">
+        <TokenPreview token={token} />
       </div>
     </div>
   );
 }
 
-export interface TokenGridProps {
+export interface TokenPaletteProps {
   tokens?: (Token | string)[];
 }
 
-/** a list of `TokenRow`s for a collection of tokens (by id or resolved `Token`) */
-export function TokenGrid({ tokens }: TokenGridProps) {
+/** a two-column list ([name, sample]) of `TokenRow`s for a collection of tokens (by id or resolved `Token`) */
+export function TokenPalette({ tokens }: TokenPaletteProps) {
   if (!tokens) {
     const tokenMap = useTokenMap();
     tokens = Array.from(tokenMap.values());
   }
   return (
-    <div className="tb-token-grid">
+    <div className="tb-token-palette">
       {tokens.map((t) => (
         <TokenRow key={typeof t === "string" ? t : t.id} token={t} />
       ))}
