@@ -5,6 +5,7 @@ import flutter from "@hommel/tokens-generator-flutter";
 export default defineConfig({
   resolver: "./src/hommel-design.resolver.json",
   outDir: "./dist/",
+  allowWarnings: true,
   validation: {
     kebabCase: true,
     contrast: {

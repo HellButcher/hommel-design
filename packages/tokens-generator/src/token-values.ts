@@ -21,12 +21,17 @@ export type ColorSpace =
   | "xyz-d65"
   | "xyz-d50";
 
-export interface ColorValue {
+const COLOR_HEX_RE = /^#([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$/;
+export type ColorHexValue = `#${string}`;
+
+export interface ColorObjectValue {
   colorSpace: ColorSpace;
   components: [number | "none", number | "none", number | "none"];
   alpha?: number;
-  hex?: string;
+  hex?: ColorHexValue;
 }
+
+export type ColorValue = ColorObjectValue | ColorHexValue;
 
 export interface DimensionValue {
   value: number;
@@ -270,7 +275,11 @@ export function isFontWeight(value: unknown): value is FontWeightValue {
   );
 }
 
-export function isColor(value: unknown): value is ColorValue {
+export function isColorHex(value: unknown): value is ColorHexValue {
+  return typeof value === "string" && COLOR_HEX_RE.test(value);
+}
+
+export function isColorObject(value: unknown): value is ColorObjectValue {
   return (
     isObject(value) &&
     typeof value.colorSpace === "string" &&
@@ -280,8 +289,12 @@ export function isColor(value: unknown): value is ColorValue {
     value.components.every((component) => component === "none" || isFiniteNumber(component)) &&
     (value.alpha === undefined ||
       (isFiniteNumber(value.alpha) && value.alpha >= 0 && value.alpha <= 1)) &&
-    (value.hex === undefined || typeof value.hex === "string")
+    (value.hex === undefined || isColorHex(value.hex))
   );
+}
+
+export function isColor(value: unknown): value is ColorValue {
+  return isColorHex(value) || isColorObject(value);
 }
 
 /** DTCG colorSpace ids that differ from colorjs.io ids */
@@ -293,6 +306,9 @@ const COLORJS_SPACES: Readonly<Partial<Record<ColorSpace, string>>> = {
 
 /** converts a DTCG color value to a colorjs.io `Color` instance */
 export function toColor(value: ColorValue): ColorJsColor {
+  if (typeof value === "string") {
+    return new ColorJsColor(value);
+  }
   const coords = value.components.map((c) => (c === "none" ? null : c)) as [
     number | null,
     number | null,

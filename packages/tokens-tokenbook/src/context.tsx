@@ -6,7 +6,7 @@ import {
   type TokenMap,
   type TokenType,
 } from "@hommel/tokens-generator";
-import { defaultVarNameFunction, toCss, type VarName } from "@hommel/tokens-generator-css";
+import { defaultVarNameFunction, toCss, type VarNameMapper } from "@hommel/tokens-generator-css";
 import React from "react";
 import { createContext, useContext, useMemo, useState, type ReactNode } from "react";
 
@@ -15,7 +15,7 @@ export interface TokensContextValue {
   input: ModifierInput;
   setInput(input: ModifierInput): void;
   tokens: TokenMap;
-  varName: VarName;
+  varName: VarNameMapper;
 }
 
 const TokensContext = createContext<TokensContextValue | undefined>(undefined);
@@ -28,7 +28,7 @@ export interface TokensProviderProps {
   input?: ModifierInput;
   onInputChange?(input: ModifierInput): void;
   /** maps a token id to its CSS custom property name; defaults to the same convention used by `@hommel/tokens-generator-css` (prefix `h`) */
-  varName?: VarName;
+  varName?: VarNameMapper;
 }
 
 /** provides a resolved `TokenDocument` (and the current modifier input) to the components below it */
@@ -66,7 +66,7 @@ export function useTokenMap(): TokenMap {
 }
 
 /** maps a token id to its CSS custom property name, e.g. `color.teal.500` -> `--h-color-teal-500` */
-export function useVarName(): VarName {
+export function useVarName(): VarNameMapper {
   return useTokensContext().varName;
 }
 

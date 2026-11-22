@@ -45,6 +45,7 @@ async function main(args: string[]) {
     options: {
       config: { type: "string", short: "c", default: DEFAULT_CONFIG_FILE },
       help: { type: "boolean", short: "h" },
+      allowWarnings: { type: "boolean" }
     },
   });
   if (values.help) {
@@ -60,9 +61,13 @@ async function main(args: string[]) {
   }
 
   const configFile = path.resolve(values.config);
-  const { default: config } = (await import(pathToFileURL(configFile).href)) as {
+  const { default: importedConfig } = (await import(pathToFileURL(configFile).href)) as {
     default: Config;
   };
+  const config = { ...importedConfig };
+  if (values.allowWarnings !== undefined) {
+    config.allowWarnings = values.allowWarnings;
+  }
   const document = await loadTokenDocument(path.resolve(path.dirname(configFile), config.resolver));
   checkDocument(document, config.validation);
   let hasErrors = false;
@@ -85,7 +90,9 @@ async function main(args: string[]) {
     process.exitCode = 2;
   } else if (hasWarnings) {
     console.log("Token document has warnings.");
-    process.exitCode = 1;
+    if (!config.allowWarnings) {
+      process.exitCode = 1;
+    }
   } else {
     console.log("Token document is valid.");
   }

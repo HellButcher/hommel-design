@@ -105,6 +105,7 @@ export interface Config {
   /** additional checks run by the `check` and `build` commands */
   validation?: ValidationConfig;
   plugins: Plugin[];
+  allowWarnings?: boolean | undefined;
 }
 
 export interface IResolver {
