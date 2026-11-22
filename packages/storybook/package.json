@@ -21,13 +21,13 @@
   },
   "dependencies": {
     "@hommel/design-tokens": "workspace:",
-    "@solidjs/web": "^2.0.0",
-    "solid-js": "^2.0.0"
+    "@solidjs/web": "^2.0.3",
+    "solid-js": "^2.0.3"
   },
   "devDependencies": {
     "@hommel/tokens-storybook": "workspace:",
     "@solidjs/testing-library": "^0.8.10",
-    "@solidjs/vite-plugin": "^3.0.0",
+    "@solidjs/vite-plugin": "^3.0.1",
     "@storybook/addon-a11y": "11.0.0-beta.3",
     "@storybook/addon-docs": "11.0.0-beta.3",
     "@storybook/addon-vitest": "11.0.0-beta.3",
@@ -41,6 +41,6 @@
     "storybook-solidjs-vite": "next",
     "typescript": "^7.0.2",
     "vite": "^8.3.8",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.1"
   }
 }
